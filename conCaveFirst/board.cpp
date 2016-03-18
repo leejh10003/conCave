@@ -39,15 +39,19 @@ vector< vector< board::status > > board::getBoard()
 
 int board::getXdimSize()
 {
-	return xDimSize;
+	return this->xDimSize;
 }
 
 
 int board::getYdimSize()
 {
-	return yDimSize;
+	return this->yDimSize;
 }
 
+void board::printBoard()
+{
+
+}
 
 
 

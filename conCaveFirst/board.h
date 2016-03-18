@@ -18,6 +18,7 @@ public:
 	vector< vector< board::status > > getBoard();
 	int getXdimSize();
 	int getYdimSize();
+	void printBoard();
 
 
 
