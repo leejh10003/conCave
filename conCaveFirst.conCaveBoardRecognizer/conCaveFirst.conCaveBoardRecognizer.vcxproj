@@ -120,6 +120,14 @@
   <ItemGroup>
     <ClCompile Include="boardRecognizer.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="boardRecognizer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\conCaveFirst\conCaveFirst.vcxproj">
+      <Project>{a1bee0b2-5017-48a1-967b-5628b5b03303}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

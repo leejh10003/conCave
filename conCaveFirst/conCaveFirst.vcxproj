@@ -153,9 +153,7 @@
     <ClInclude Include="board.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\conCaveFirst.conCaveBoardRecognizer\conCaveFirst.conCaveBoardRecognizer.vcxproj">
-      <Project>{f983001f-89d1-4c09-9fcd-d79d383eceb5}</Project>
-    </ProjectReference>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
