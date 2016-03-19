@@ -4,24 +4,28 @@
 
 
 
-board::board(unsigned int size) : xDimSize(size), yDimSize(size)
+Board::Board(unsigned int size) : xDimSize(size), yDimSize(size)
 {
 	assignBoard(size, size);
 };
 
+Board::Board(Board::Coordinate inputCoordinate)
+{
+	assignBoard(inputCoordinate.x, inputCoordinate.y);
+}
 
-board::board(unsigned int xDimInput, unsigned int yDimInput) : xDimSize(xDimInput), yDimSize(yDimInput)
+Board::Board(unsigned int xDimInput, unsigned int yDimInput) : xDimSize(xDimInput), yDimSize(yDimInput)
 {
 	assignBoard(xDimInput, yDimInput);
 }
 
 
-bool board::putConcaveStone(int xCoordinate, int yCoordinate, board::status statusValue)
+bool Board::putConcaveStone(Board::Coordinate inputCoordinate, Board::Status statusValue)
 {
-	if (checkBoundry(xCoordinate, yCoordinate) == true &&
-		checkIsStatusNone(xCoordinate, yCoordinate) == true)
+	if (checkBoundry(inputCoordinate) == true &&
+		checkIsStatusNone(inputCoordinate) == true)
 	{
-		this->instanceBoard[xCoordinate][yCoordinate] = statusValue;
+		this->instanceBoard[inputCoordinate.x][inputCoordinate.y] = statusValue;
 		return true;
 	}
 	else
@@ -31,24 +35,18 @@ bool board::putConcaveStone(int xCoordinate, int yCoordinate, board::status stat
 }
 
 
-vector< vector< board::status > > board::getBoard()
+vector< vector< Board::Status > > Board::getBoard()
 {
 	return this->instanceBoard;
 }
 
 
-int board::getXdimSize()
+Board::Coordinate Board::getBoardSize()
 {
-	return this->xDimSize;
+	return Board::Coordinate{ xDimSize, yDimSize };
 }
 
-
-int board::getYdimSize()
-{
-	return this->yDimSize;
-}
-
-void board::printBoard()
+void Board::printBoard()
 {
 
 }
@@ -56,18 +54,18 @@ void board::printBoard()
 
 
 
-void board::assignBoard(int x, int y)
+void Board::assignBoard(int x, int y)
 {
-	vector< board::status > temp;
+	vector< Board::Status > temp;
 	temp.assign(yDimSize, none);
 	this->instanceBoard.assign(xDimSize, temp);
 }
 
 
-bool board::checkBoundry(int xCoordinate, int yCoordinate)
+bool Board::checkBoundry(Board::Coordinate inputCoordinate)
 {
-	if (xCoordinate >= this->xDimSize || yCoordinate >= this->yDimSize ||
-		xCoordinate < 0 || yCoordinate < 0)
+	if (inputCoordinate.x >= this->xDimSize || inputCoordinate.y >= this->yDimSize ||
+		inputCoordinate.x  < 0 || inputCoordinate.y < 0)
 	{
 		return false;
 	}
@@ -78,9 +76,9 @@ bool board::checkBoundry(int xCoordinate, int yCoordinate)
 }
 
 
-bool board::checkIsStatusNone(int xCoordinate, int yCoordinate)
+bool Board::checkIsStatusNone(Board::Coordinate inputCoordinate)
 {
-	if (this->instanceBoard[xCoordinate][yCoordinate] != status::none)
+	if (this->instanceBoard[inputCoordinate.x][inputCoordinate.y] != Board::Status::none)
 	{
 		return false;
 	}

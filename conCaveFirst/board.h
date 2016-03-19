@@ -4,20 +4,24 @@
 
 using namespace std;
 
-class board {
+class Board {
 public:
-	enum status {
+	enum Status {
 		black = -1,
 		none = 0,
 		white = 1
 	};
+	struct Coordinate {
+		int x;
+		int y;
+	};
 
-	board(unsigned int size);
-	board(unsigned int xDimInput, unsigned int yDimInput);
-	bool putConcaveStone(int xCoordinate, int yCoordinate, board::status statusValue);
-	vector< vector< board::status > > getBoard();
-	int getXdimSize();
-	int getYdimSize();
+	Board(unsigned int size);
+	Board(Board::Coordinate inputCoordinate);
+	Board(unsigned int xDimInput, unsigned int yDimInput);
+	bool putConcaveStone(Coordinate inputCoordinate, Board::Status statusValue);
+	vector< vector< Board::Status > > getBoard();
+	Board::Coordinate getBoardSize();
 	void printBoard();
 
 
@@ -36,9 +40,9 @@ public:
 private:
 	int xDimSize = 0;
 	int yDimSize = 0;
-	vector< vector< board::status > > instanceBoard;
+	vector< vector< Board::Status > > instanceBoard;
 
 	void assignBoard(int x, int y);
-	bool checkBoundry(int xCoordinate, int yCoordinate);
-	bool checkIsStatusNone(int xCoordinate, int yCoordinate);
+	bool checkBoundry(Coordinate inputCoordinate);
+	bool checkIsStatusNone(Coordinate inputCoordinate);
 };
