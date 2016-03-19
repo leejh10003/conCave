@@ -12,38 +12,42 @@ public:
 	};
 	void addLines(Board inputBoard, Board::Coordinate inputStoneCoordinate)
 	{
-		
+		BoardRecognizer::CheckSideExistence::up(inputBoard, inputStoneCoordinate) == true ?
 	}
 private:
 	list<BoardRecognizer::Line> lines;
-	class checkSideExist {
-		bool up(Board inputBoard, Board::Coordinate inputStoneCoordinate)
+	class CheckSideExistence {
+	public:
+		static bool up(Board inputBoard, Board::Coordinate inputStoneCoordinate)
 		{
 			if (inputStoneCoordinate.y > 0)
 				return true;
 			else
 				return false;
 		}
-		bool down(Board inputBoard, Board::Coordinate inputStoneCoordinate)
+		static bool down(Board inputBoard, Board::Coordinate inputStoneCoordinate)
 		{
 			if (inputStoneCoordinate.y < inputBoard.getBoardSize().y)
 				return true;
 			else
 				return false;
 		}
-		bool left(Board inputBoard, Board::Coordinate inputStoneCoordinate)
+		static bool left(Board inputBoard, Board::Coordinate inputStoneCoordinate)
 		{
 			if (inputStoneCoordinate.x > 0)
 				return true;
 			else
 				return false;
 		}
-		bool right(Board inputBoard, Board::Coordinate inputStoneCoordinate)
+		static bool right(Board inputBoard, Board::Coordinate inputStoneCoordinate)
 		{
 			if (inputStoneCoordinate.x < inputBoard.getBoardSize().x)
 				return true;
 			else
 				return false;
 		}
+	};
+	class LineSideCheck {
+
 	};
 };
