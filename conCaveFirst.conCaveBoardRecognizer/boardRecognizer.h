@@ -48,6 +48,7 @@ private:
 		}
 	};
 	class LineSideCheck {
-
+	public:
+		static void seek(Board inputBoard, Board::Coordinate inputStoneCoordinatem, BoardRecognizer::Line lines)
 	};
 };
