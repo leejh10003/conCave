@@ -15,6 +15,10 @@ public:
 		int x;
 		int y;
 	};
+	struct GoStone {
+		Board::Status color;
+		Board::Coordinate position;
+	};
 
 	Board(unsigned int size);
 	Board(Board::Coordinate inputCoordinate);
@@ -43,6 +47,6 @@ private:
 	vector< vector< Board::Status > > instanceBoard;
 
 	void assignBoard(int x, int y);
-	bool checkBoundry(Coordinate inputCoordinate);
-	bool checkIsStatusNone(Coordinate inputCoordinate);
+	bool checkBoundry(Board::Coordinate inputCoordinate);
+	bool checkIsStatusNone(Board::Coordinate inputCoordinate);
 };

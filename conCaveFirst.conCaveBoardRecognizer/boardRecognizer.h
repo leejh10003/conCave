@@ -7,16 +7,26 @@ class BoardRecognizer
 {
 public:
 	struct Line {
-		Board::Coordinate start;
-		Board::Coordinate end;
+		Board::GoStone start;
+		Board::GoStone end;
+		Board::Status color;
 	};
 private:
 	list<BoardRecognizer::Line> lines;
-	bool isThereUpsideLine(Board::Coordinate inputPosition)
+	void searchDownsideLines(Board inputBoard)
 	{
-		for (list<BoardRecognizer::Line>::reverse_iterator searchIterator = this->lines.rbegin(); searchIterator != lines.rend(); searchIterator++)
-		{
-			if( searchIterator->end.x == inputPosition.x && searchIterator->end.y == inputPosition.y )
-		}
+
+	}
+	void searchRighesideLines(Board inputBoard)
+	{
+
+	}
+	void searchDiagonalLines(Board inputBoard)
+	{
+
+	}
+	void searchAntiDiagonalLines(Board inputBoard)
+	{
+
 	}
 };
