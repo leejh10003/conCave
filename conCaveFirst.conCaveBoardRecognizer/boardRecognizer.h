@@ -7,26 +7,10 @@ class BoardRecognizer
 {
 public:
 	struct Line {
-		Board::GoStone start;
-		Board::GoStone end;
-		Board::Status color;
+		Board::Coordinate startCoordinate;
+		Board::Coordinate endCoordinate;
 	};
 private:
-	list<BoardRecognizer::Line> lines;
-	void searchDownsideLines(Board inputBoard)
-	{
-
-	}
-	void searchRighesideLines(Board inputBoard)
-	{
-
-	}
-	void searchDiagonalLines(Board inputBoard)
-	{
-
-	}
-	void searchAntiDiagonalLines(Board inputBoard)
-	{
-
-	}
+	list<BoardRecognizer::Line> whiteLines;
+	list<BoardRecognizer::Line> blackLines;
 };

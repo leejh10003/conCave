@@ -25,7 +25,7 @@ bool Board::putConcaveStone(Board::Coordinate inputCoordinate, Board::Status sta
 	if (checkBoundry(inputCoordinate) == true &&
 		checkIsStatusNone(inputCoordinate) == true)
 	{
-		this->instanceBoard[inputCoordinate.x][inputCoordinate.y] = statusValue;
+		this->boardMatrix[inputCoordinate.x][inputCoordinate.y] = statusValue;
 		return true;
 	}
 	else
@@ -37,7 +37,7 @@ bool Board::putConcaveStone(Board::Coordinate inputCoordinate, Board::Status sta
 
 vector< vector< Board::Status > > Board::getBoard()
 {
-	return this->instanceBoard;
+	return this->boardMatrix;
 }
 
 
@@ -57,8 +57,8 @@ void Board::printBoard()
 void Board::assignBoard(int x, int y)
 {
 	vector< Board::Status > temp;
-	temp.assign(yDimSize, none);
-	this->instanceBoard.assign(xDimSize, temp);
+	temp.assign(yDimSize, Board::Status::none);
+	this->boardMatrix.assign(xDimSize, temp);
 }
 
 
@@ -78,7 +78,7 @@ bool Board::checkBoundry(Board::Coordinate inputCoordinate)
 
 bool Board::checkIsStatusNone(Board::Coordinate inputCoordinate)
 {
-	if (this->instanceBoard[inputCoordinate.x][inputCoordinate.y] != Board::Status::none)
+	if (this->boardMatrix[inputCoordinate.x][inputCoordinate.y] != Board::Status::none)
 	{
 		return false;
 	}

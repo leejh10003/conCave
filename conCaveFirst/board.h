@@ -44,7 +44,7 @@ public:
 private:
 	int xDimSize = 0;
 	int yDimSize = 0;
-	vector< vector< Board::Status > > instanceBoard;
+	vector< vector< Board::Status > > boardMatrix;
 
 	void assignBoard(int x, int y);
 	bool checkBoundry(Board::Coordinate inputCoordinate);
