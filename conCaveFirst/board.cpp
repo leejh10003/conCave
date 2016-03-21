@@ -56,9 +56,7 @@ void Board::printBoard()
 
 void Board::assignBoard(int x, int y)
 {
-	vector< Board::Status > temp;
-	temp.assign(yDimSize, Board::Status::none);
-	this->boardMatrix.assign(xDimSize, temp);
+	this->boardMatrix.assign(x, vector< Board::Status >(y, Board::Status::none));
 }
 
 
