@@ -17,6 +17,7 @@ private:
 		
 		findEmergencePoint(boardStatus, color, winningMap);
 		winnignMapComplete(boardStatus, color, winningMap);
+
 	}
 	void findEmergencePoint(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point winningMap[3][3])
 	{
@@ -154,6 +155,33 @@ private:
 					winningMap[iterator->x][iterator->y].linesCanContribute += 1;
 				}
 				addedCoordinate.clear();
+			}
+		}
+	}
+	Board::Coordinate winningmapProcesing(BoardRecognizer::Point point[3][3])
+	{
+		int best = 0;
+		list<Board::Coordinate> emergencePoint;
+		list<Board::Coordinate> winningPoint;
+		list<Board::Coordinate> both;
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				int thisPointLines = point[i][j].linesCanContribute;
+				if (best < thisPointLines)
+				{
+					winningPoint.clear();
+					winningPoint.push_back(Board::Coordinate{i, j});
+				}
+				else if (best == thisPointLines)
+				{
+					winningPoint.push_back(Board::Coordinate{i, j});
+				}
+				if (point[i][j].isEmergence)
+				{
+					winningPoint.push_back(Board::Coordinate{ i, j });
+				}
 			}
 		}
 	}

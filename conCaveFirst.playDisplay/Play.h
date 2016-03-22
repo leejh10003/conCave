@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <regex>
 #include "../conCaveFirst/board.h"
+#include "../conCaveFirst.conCaveBoardRecognizer/boardRecognizer.h"
 #include "Display.h"
 using namespace std;
 class Play {
@@ -72,5 +73,6 @@ private:
 		boardToPlay.printBoard();
 		Board::Coordinate userInput = this->queryCoordinateToPutStone();
 		boardToPlay.putConcaveStone(userInput, playerColor);
+		BoardRecognizer
 	}
 };
