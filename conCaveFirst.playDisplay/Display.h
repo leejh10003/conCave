@@ -13,7 +13,7 @@ private:
 		Board::Coordinate dimSize = boardToDisplay.getBoardSize();
 		for (int i = 0; i < dimSize.x; i++) {
 			for (int j = 0; j < dimSize.y; j++)
-				stringForDisplay.append(1, statusToChar(dimSize, Board::Coordinate{ i, j }, boardStoneColor[i][j]));
+				stringForDisplay += statusToChar(dimSize, Board::Coordinate{ i, j }, boardStoneColor[i][j]);
 			stringForDisplay.append(1, '\n');
 		}
 	}
