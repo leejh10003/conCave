@@ -16,7 +16,7 @@ private:
 		BoardRecognizer::Point winningMap[3][3];
 		
 		findEmergencePoint(boardStatus, color, winningMap);
-		addLinesCanContribute(boardStatus, color, winningMap);
+		winnignMapComplete(boardStatus, color, winningMap);
 	}
 	void findEmergencePoint(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point winningMap[3][3])
 	{
@@ -123,7 +123,7 @@ private:
 			}
 		}
 	}
-	void addLinesCanContribute(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point winningMap[3][3])
+	void winnignMapComplete(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point winningMap[3][3])
 	{
 		bool isThereBlack;
 		bool isThereWhite;
@@ -157,5 +157,4 @@ private:
 			}
 		}
 	}
-	
 };
