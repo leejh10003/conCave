@@ -48,7 +48,9 @@ Board::Coordinate Board::getBoardSize()
 
 void Board::printBoard()
 {
-
+	displayStringMake();
+	cout << stringForDisplay << endl;
+	stringForDisplay.clear();
 }
 
 
@@ -86,3 +88,51 @@ bool Board::checkIsStatusNone(Board::Coordinate inputCoordinate)
 	}
 }
 
+
+void Board::displayStringMake()
+{
+	for (int i = 0; i < xDimSize; i++) {
+		for (int j = 0; j < xDimSize; j++)
+			stringForDisplay += statusToChar(Board::Coordinate{xDimSize, yDimSize}, Board::Coordinate{ i, j }, boardMatrix[i][j]);
+		stringForDisplay.append(1, '\n');
+	}
+}
+char Board::statusToChar(Board::Coordinate boardSize, Board::Coordinate pointCoordinate, Board::Status color)
+{
+	int maxX = boardSize.x - 1;
+	int maxY = boardSize.y - 1;
+	int currentX = pointCoordinate.x;
+	int currentY = pointCoordinate.y;
+	switch (color)
+	{
+	case Board::black:
+		return '¡Ü';
+		break;
+	case Board::white:
+		return '¡Û';
+		break;
+	default:
+		if (currentX == 0)
+			if (currentY == 0)
+				return '¦¦';
+			else if (currentY == maxY)
+				return '¦£';
+			else
+				return '¦§';
+		else if (currentX == maxX)
+			if (currentY == 0)
+				return '¦¥';
+			else if (currentY == maxY)
+				return '¦¤';
+			else
+				return '¦©';
+		else
+			if (currentY == 0)
+				return '¦ª';
+			else if (currentY == maxY)
+				return '¦¨';
+			else
+				return '¦«';
+			break;
+	}
+}

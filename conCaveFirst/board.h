@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -44,9 +45,12 @@ public:
 private:
 	int xDimSize = 0;
 	int yDimSize = 0;
+	string stringForDisplay;
 	vector< vector< Board::Status > > boardMatrix;
 
 	void assignBoard(int x, int y);
 	bool checkBoundry(Board::Coordinate inputCoordinate);
 	bool checkIsStatusNone(Board::Coordinate inputCoordinate);
+	void displayStringMake();
+	char statusToChar(Board::Coordinate boardSize, Board::Coordinate pointCoordinate, Board::Status color);
 };
