@@ -72,7 +72,6 @@ void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardSta
 			// Push this line's blank place to returning list
 			listEmergenceLines.push_back(blankPoint);
 		}
-		cout << endl;
 	}
 	// Horizontal searching
 	for (int i = 0; i < 3; i++)
@@ -108,7 +107,6 @@ void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardSta
 			// Push this line's blank place to returning list
 			listEmergenceLines.push_back(blankPoint);
 		}
-		cout << endl;
 	}
 	// Diagonal searching
 	for (int i = 0; i < 3; i++)

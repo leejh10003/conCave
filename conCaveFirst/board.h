@@ -82,5 +82,5 @@ private:
 	bool checkBoundry(Board::Coordinate inputCoordinate);
 	bool checkIsStatusNone(Board::Coordinate inputCoordinate);
 	void displayStringMake();
-	char statusToChar(Board::Coordinate boardSize, Board::Coordinate pointCoordinate, Board::Status color);
+	string statusToString(Board::Coordinate boardSize, Board::Coordinate pointCoordinate, Board::Status color);
 };

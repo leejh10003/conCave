@@ -131,8 +131,9 @@ void Board::displayStringMake()
 {
 	for (int i = 0; i < xDimSize; i++) {
 		for (int j = 0; j < xDimSize; j++)
-			stringForDisplay += statusToChar(Board::Coordinate{xDimSize, yDimSize}, Board::Coordinate{ i, j }, boardMatrix[j][i]);
-		stringForDisplay.append(1, '\n');
+			stringForDisplay += statusToString(Board::Coordinate{xDimSize, yDimSize}, Board::Coordinate{ i, j }, boardMatrix[j][i]);
+		if (i < xDimSize -1 )
+			stringForDisplay.append(1, '\n');
 	}
 }
 
@@ -141,7 +142,7 @@ void Board::displayStringMake()
 /// </summary>
 /// <remarks>
 /// This function is private. Do not call it from other class or instance.
-char Board::statusToChar(Board::Coordinate boardSize, Board::Coordinate pointCoordinate, Board::Status color)
+string Board::statusToString(Board::Coordinate boardSize, Board::Coordinate pointCoordinate, Board::Status color)
 {
 	int maxX = boardSize.x - 1;
 	int maxY = boardSize.y - 1;
@@ -150,33 +151,33 @@ char Board::statusToChar(Board::Coordinate boardSize, Board::Coordinate pointCoo
 	switch (color)
 	{
 	case Board::black:
-		return 'b';
+		return "¡Ü";
 		break;
 	case Board::white:
-		return 'w';
+		return "¡Û";
 		break;
 	default:
 		if (currentX == 0)
 			if (currentY == 0)
-				return 'x';
+				return " X";
 			else if (currentY == maxY)
-				return 'x';
+				return " X";
 			else
-				return 'x';
+				return " X";
 		else if (currentX == maxX)
 			if (currentY == 0)
-				return 'x';
+				return " X";
 			else if (currentY == maxY)
-				return 'x';
+				return " X";
 			else
-				return 'x';
+				return " X";
 		else
 			if (currentY == 0)
-				return 'x';
+				return " X";
 			else if (currentY == maxY)
-				return 'x';
+				return " X";
 			else
-				return 'x';
+				return " X";
 			break;
 	}
 }
