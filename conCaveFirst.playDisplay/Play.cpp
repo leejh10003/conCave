@@ -2,16 +2,17 @@
 
 Play::Play()
 {
-	Board boardForThisGame(3);
-	Board::Status userColor = Board::Status::white;//queryUserToSelectColor();
+	Board boardForThisGame(3); //At now, we only implement AI for 3-concave
+	Board::Status userColor = Board::Status::white;
 	Board::Status computerColor = (Board::Status)(-(int)userColor);
+	//Variables for user color selection. Later, color choice will be implemented
 	while (true)
 	{
 		if (boardForThisGame.isFull()) {
 			cout << "No winner" << endl;
 			break;
 		}
-		Board::Status result = step(boardForThisGame, userColor);
+		Board::Status result = step(boardForThisGame, userColor);//If not ended, game goes on
 		if (result != Board::Status::none)
 			if (result == Board::Status::black) {
 				cout << "winner is black" << endl;
@@ -23,6 +24,15 @@ Play::Play()
 			}
 	}
 }
+/// <summary>
+/// This function every lines on board and check the game is ended. This function returns side which is winner.
+/// </summary>
+/// <param name ="boardToPlay">
+/// Board used to this round
+/// </param>
+/// <remarks>
+/// This function is private. Do not call it from outside instance
+///</remarks>
 Board::Status Play::winCheck(Board& boardToPlay)
 {
 	bool whiteWin = false;
@@ -30,6 +40,7 @@ Board::Status Play::winCheck(Board& boardToPlay)
 	int firstCount = 0;
 	int secondCount = 0;
 	vector<vector<Board::Status>> checkBoard = boardToPlay.getBoard();
+	// Linear searching for vertical and horizontal
 	for (int i = 0; i < 3; i++)
 	{
 		firstCount = 0;
@@ -60,6 +71,7 @@ Board::Status Play::winCheck(Board& boardToPlay)
 	}
 	firstCount = 0;
 	secondCount = 0;
+	// Linear searching for diagonal and antidiagonal
 	for (int i = 0; i < 3; i++)
 	{
 		firstCount += (int)checkBoard[i][i];
@@ -96,6 +108,12 @@ Board::Status Play::winCheck(Board& boardToPlay)
 		return Board::Status::black;
 	}
 }
+/// <summary>
+/// This function query user's color side and returns it. Later, it will be used.
+/// </summary>
+/// <remarks>
+/// This function is private. Do not call it from outside instance
+///</remarks>
 Board::Status Play::queryUserToSelectColor()
 {
 	string inputFromUser;
@@ -119,10 +137,16 @@ Board::Status Play::queryUserToSelectColor()
 		}
 	}
 }
+/// <summary>
+/// This function query user's coordination selection and returns it.
+/// </summary>
+/// <remarks>
+/// This function is private. Do not call it from outside instance
+///</remarks>
 Board::Coordinate Play::queryCoordinateToPutStone()
 {
 	string inputFromUser;
-	regex inputPattern("[\\s]*[(][\\s]*[0-9]{1,}[\\s]*[,][\\s]*[0-9]{1,}[\\s]*[)][\\s]*");
+	regex inputPattern("[\\s]*[(][\\s]*[0-9]{1,}[\\s]*[,][\\s]*[0-9]{1,}[\\s]*[)][\\s]*");// Right form input
 	bool isMatched = false;
 	while (isMatched == false) {
 		cout << "input coordinate to put stone in (x, y) form: ";
@@ -132,31 +156,32 @@ Board::Coordinate Play::queryCoordinateToPutStone()
 		isMatched = regex_match(inputFromUser, inputPattern);
 		if (isMatched == false)
 			cout << "Wrong form. ";
-		/*switch (isMatched)
-		{
-		case true:
-			cout << "true" << endl;
-			break;
-		case false:
-			cout << "false" << endl;
-			continue;
-		default:
-			break;
-		}*/
 	}
 	inputFromUser = regex_replace(inputFromUser, regex("[\\s]*"), string(""));
 	inputFromUser = regex_replace(inputFromUser, regex("[(]"), string(""));
-	inputFromUser = regex_replace(inputFromUser, regex("[)]"), string(""));
+	inputFromUser = regex_replace(inputFromUser, regex("[)]"), string(""));// input normalization
 	int x = stoi(inputFromUser);
 	int y = stoi(inputFromUser.substr(inputFromUser.find(",") + 1));
 	return Board::Coordinate{ x, y };
 }
+/// <summary>
+/// This function continue game on each step. It gets users input and gets AI's decision.
+/// </summary>
+/// <param name ="boardToPlay">
+/// Board used to this round
+/// </param>
+/// <param name = "playerColor">
+/// Playerside color
+/// </param>
+/// <remarks>
+/// This function is private. Do not call it from outside instance
+///</remarks>
 Board::Status Play::step(Board& boardToPlay, Board::Status playerColor)
 {
 	Board::Status computerColor;
 	Board::Coordinate userInput;
 	Board::Coordinate computerPutdown;
-	switch (playerColor)
+	switch (playerColor)// Each step of calling is different because of playerside's color
 	{
 	case Board::Status::black:
 		userInput = this->queryCoordinateToPutStone();

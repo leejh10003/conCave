@@ -11,6 +11,9 @@
 using namespace std;
 class Play {
 public:
+	/// <summary>
+	/// This comstruct each game. Later, round repetition will be imnplemented
+	/// </summary>
 	Play();
 private:
 	Board::Status winCheck(Board& boardToPlay);

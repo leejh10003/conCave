@@ -7,13 +7,31 @@ Board::Coordinate BoardRecognizer::whereToPut(vector<vector<Board::Status>>& boa
 	winnignMapComplete(boardStatus, color, winningMap);
 	return returnWhichToChoose(winningMap);
 }
+/// <summary>
+/// This function find the place in concaveBoard where is not blank and modify winningMap
+/// </summary>
+/// <param name="boardStatus">Act as concave board array</param>
+/// <param name="winningMap">This array includes points'information about possibility to win</param>
+/// <remarks>
+/// This function is private. Do not try to call this function.
+/// </remarks>
 void BoardRecognizer::findNoneBlank(vector<vector<Board::Status>>& boardStatus, BoardRecognizer::Point(&winningMap)[3][3])
-	{
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 3; j++)
-				if (boardStatus[i][j] == Board::Status::none)
-					winningMap[i][j].isNone == true;
-	}
+{
+	//Iterates over every points
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 3; j++)
+			if (boardStatus[i][j] == Board::Status::none)//find place where is blank
+				winningMap[i][j].isNone == true;
+}
+/// <summary>
+/// This function find the place in concaveBoard where is important because if not put here, the opponent will win
+/// </summary>
+/// <param name="boardStatus">Act as concave board array</param>
+/// <param name="myColor">This paramater determine my color</param>
+/// <param name="winningMap">This array includes points'information about possibility to win</param>
+/// <remarks>
+/// This function is private. Do not try to call this function.
+/// </remarks>
 void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point(&winningMap)[3][3])
 
 {
@@ -21,145 +39,164 @@ void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardSta
 	int blankCount;
 	Board::Coordinate blankPoint;
 	list<Board::Coordinate> listEmergenceLines;
+	// Vertical searching
 	for (int i = 0; i < 3; i++)
 	{
-		cout << "downline " << i << endl;
 		opponentCount = 0;
 		blankCount = 0;
 		for (int j = 0; j < 3; j++)
 		{
+			//search point data
+
+			//Position where i putted
 			if (boardStatus[i][j] == myColor)
 			{
-				cout << "mine ";
 				continue;
 			}
+			//Position where is blank. this is candidate emmergence point.
 			else if (boardStatus[i][j] == Board::Status::none)
 			{
 				blankPoint.x = i;
 				blankPoint.y = j;
 				blankCount++;
-				cout << "blank added ";
 			}
+			//Position where enemy putted.
 			else
 			{
 				opponentCount++;
-				cout << "opponent added ";
 			}
 		}
+		// If this line seem to be completed
 		if (opponentCount == 2 && blankCount == 1)
 		{
-			cout << "added " << endl;
+			// Push this line's blank place to returning list
 			listEmergenceLines.push_back(blankPoint);
 		}
 		cout << endl;
 	}
+	// Horizontal searching
 	for (int i = 0; i < 3; i++)
 	{
-		cout << "right" << i << endl;
 		opponentCount = 0;
 		blankCount = 0;
 		for (int j = 0; j < 3; j++)
 		{
+			//search point data
+
+			//Position where i putted
 			if (boardStatus[j][i] == myColor)
 			{
-				cout << "mine ";
 				continue;
 			}
+
+			//Position where is blank. this is candidate emmergence point.
 			else if (boardStatus[j][i] == Board::Status::none)
 			{
 				blankPoint.x = j;
 				blankPoint.y = i;
 				blankCount++;
-				cout << "blank added ";
 			}
+			//Position where enemy putted.
 			else
 			{
 				opponentCount++;
-				cout << "opponent added ";
 			}
 		}
+		// If this line seem to be completed
 		if (opponentCount == 2 && blankCount == 1)
 		{
-			cout << "added " << endl;
+			// Push this line's blank place to returning list
 			listEmergenceLines.push_back(blankPoint);
 		}
 		cout << endl;
 	}
-	cout << "diagonal" << endl;
+	// Diagonal searching
 	for (int i = 0; i < 3; i++)
 	{
 		opponentCount = 0;
 		blankCount = 0;
+		//Position where i putted
 		if (boardStatus[i][i] == myColor)
 		{
-			cout << "mine ";
 			continue;
 		}
+		//Position where is blank. this is candidate emmergence point.
 		else if (boardStatus[i][i] == Board::Status::none)
 		{
 			blankPoint.x = i;
 			blankPoint.y = i;
 			blankCount++;
-			cout << "blank added ";
 		}
+		//Position where enemy putted.
 		else
 		{
 			opponentCount++;
-			cout << "opponent added ";
 		}
 	}
+	// If this line seem to be completed
 	if (opponentCount == 2 && blankCount == 1)
 	{
-		cout << "added" << endl;
+		// Push this line's blank place to returning list
 		listEmergenceLines.push_back(blankPoint);
 	}
-	cout << endl;
-	cout << "anti diagonal" << endl;
+	// Antidiagonal searching
 	for (int i = 0; i < 3; i++)
 	{
 		opponentCount = 0;
 		blankCount = 0;
+		//Position where i putted
 		if (boardStatus[i][2 - i] == myColor)
 		{
-			cout << "mine ";
 			continue;
 		}
+		//Position where is blank. this is candidate emmergence point.
 		else if (boardStatus[i][2 - i] == Board::Status::none)
 		{
 			blankPoint.x = i;
 			blankPoint.y = 2 - i;
 			blankCount++;
-			cout << "blank added";
 		}
+		//Position where enemy putted.
 		else
 		{
 			opponentCount++;
-			cout << "opponent added";
 		}
 	}
+	// If this line seem to be completed
 	if (opponentCount == 2 && blankCount == 1)
 	{
-		cout << "added" << endl;
+		// Push this line's blank place to returning list
 		listEmergenceLines.push_back(blankPoint);
 	}
-	cout << endl;
+	// Process every list element's emergence information to winningmap
 	for (list<Board::Coordinate>::iterator iterator = listEmergenceLines.begin(); iterator != listEmergenceLines.end(); iterator++)
 	{
 		winningMap[iterator->x][iterator->y].isEmergence = true;
-		cout << "Pushed (" << iterator->x << ", " << iterator->y << ')' << endl;
 	}
 }
+/// <summary>
+/// This Function completes winningmap based on the result contributed from functions like findNoneBlank, findEmergencePoint.
+/// <see cref="findNoneBlank"/>
+/// </summary>
+/// <param name="boardStatus">Act as concave board array</param>
+/// <param name="myColor">This paramater determine my color</param>
+/// <param name="winningMap">This array includes points'information about possibility to win</param>
+/// <remarks>
+/// This function is private. Do not try to call this function.
+/// </remarks>
 void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point(&winningMap)[3][3])
 {
 	bool isThereBlack;
 	bool isThereWhite;
 	list<Board::Coordinate> addedCoordinate;
-	//cout << "Downside:" << endl;
+	// Calculate each position's number of lines where it can contribute to.
+	// Vertical
 	for (int i = 0; i < 3; i++)
 	{
 		isThereBlack = false;
 		isThereWhite = false;
 
+		// Search lines' stones
 		for (int j = 0; j < 3; j++)
 		{
 			switch (boardStatus[i][j])
@@ -170,13 +207,14 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 				isThereWhite = true; break;
 			case Board::Status::none:
 				addedCoordinate.push_back(Board::Coordinate{ i, j });
-				//cout << '(' << i << ',' << j << ")Pushed" << endl;
 			default:
 				continue;
 			}
 		}
-		if (isThereBlack == false || isThereWhite == false)
+		
+		if (isThereBlack == false || isThereWhite == false)// If line is filled with different colr, it is meaningless line
 		{
+			// Else, add number
 			for (list<Board::Coordinate>::iterator iterator = addedCoordinate.begin(); iterator != addedCoordinate.end(); iterator++)
 			{
 				winningMap[iterator->x][iterator->y].linesCanContribute += 1;
@@ -184,17 +222,13 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 		}
 		addedCoordinate.clear();
 	}
-	/*for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++)
-			cout << winningMap[i][j].linesCanContribute;
-		cout << endl;
-	}*/
-	//cout << "Rightside:" << endl;
+	// Horizontal
 	for (int i = 0; i < 3; i++)
 	{
 		isThereBlack = false;
 		isThereWhite = false;
 
+		// Search lines' stones
 		for (int j = 0; j < 3; j++)
 		{
 			switch (boardStatus[j][i])
@@ -205,13 +239,13 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 				isThereWhite = true; break;
 			case Board::Status::none:
 				addedCoordinate.push_back(Board::Coordinate{ j, i });
-				//cout << '(' << i << ',' << j << ")Pushed" << endl;
 			default:
 				continue;
 			}
 		}
-		if (isThereBlack == false || isThereWhite == false)
+		if (isThereBlack == false || isThereWhite == false)// If line is filled with different colr, it is meaningless line
 		{
+			// Else, add number
 			for (list<Board::Coordinate>::iterator iterator = addedCoordinate.begin(); iterator != addedCoordinate.end(); iterator++)
 			{
 				winningMap[iterator->x][iterator->y].linesCanContribute += 1;
@@ -219,14 +253,10 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 		}
 		addedCoordinate.clear();
 	}
-	/*for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++)
-			cout << winningMap[i][j].linesCanContribute;
-		cout << endl;
-	}*/
-	//cout << "Diagonal:" << endl;
+	// Diagonal
 	isThereBlack = false;
 	isThereWhite = false;
+	// Search lines' stones
 	for (int i = 0; i < 3; i++)
 	{
 		switch (boardStatus[i][i])
@@ -237,37 +267,23 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 			isThereWhite = true; break;
 		case Board::Status::none:
 			addedCoordinate.push_back(Board::Coordinate{ i, i });
-			//cout << '(' << i << ',' << i << ")Pushed" << endl;
 		default:
 			continue;
 		}
 	}
-	/*if (isThereBlack == false) 
-		cout << "no black" << endl;
-	else
-		cout <<"Black exist"<< endl;
-	if (isThereWhite == false)
-		cout << "no white" << endl;
-	else
-		cout << "White exist" << endl;*/
-	if (isThereBlack == false || isThereWhite == false)
+	if (isThereBlack == false || isThereWhite == false)// If line is filled with different colr, it is meaningless line
 	{
-		//if (addedCoordinate.begin() == addedCoordinate.end()) cout << "fuck" << endl;
+		// Else, add number
 		for (list<Board::Coordinate>::iterator iterator = addedCoordinate.begin(); iterator != addedCoordinate.end(); iterator++)
 		{
-			//cout << "adding" << iterator->x << ',' << iterator->y << endl;
 			winningMap[iterator->x][iterator->y].linesCanContribute += 1;
 		}
 	}
 	addedCoordinate.clear();
-	/*for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++)
-			cout << winningMap[i][j].linesCanContribute;
-		cout << endl;
-	}*/
-	//cout << "Anti Diagonal:" << endl;
+	// Antidiagonal
 	isThereBlack = false;
 	isThereWhite = false;
+	// Search lines' stones
 	for (int i = 0; i < 3; i++)
 	{
 		switch (boardStatus[i][2-i])
@@ -278,39 +294,34 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 			isThereWhite = true; break;
 		case Board::Status::none:
 			addedCoordinate.push_back(Board::Coordinate{ i, 2-i });
-			//cout << '(' << i << ',' << 2-i << ")Pushed" << endl;
 		default:
 			continue;
 		}
 	}
-	/*if (isThereBlack == false)
-		cout << "no black" << endl;
-	else
-		cout << "Black exist" << endl;
-	if (isThereWhite == false)
-		cout << "no white" << endl;
-	else
-		cout << "White exist" << endl;*/
-	if (isThereBlack == false || isThereWhite == false)
+	if (isThereBlack == false || isThereWhite == false)// If line is filled with different colr, it is meaningless line
 	{
-		//if (addedCoordinate.begin() == addedCoordinate.end()) cout << "fuck" << endl;
+		// Else, add number
 		for (list<Board::Coordinate>::iterator iterator = addedCoordinate.begin(); iterator != addedCoordinate.end(); iterator++)
 		{
-			//cout << "adding" << iterator->x << ',' << iterator->y << endl;
 			winningMap[iterator->x][iterator->y].linesCanContribute += 1;
 		}
 	}
 	addedCoordinate.clear();
+	// Upper operations never eliminate positions which are not blank, but still can be linked. We don't need this information. So eliminate them.
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
 			if (boardStatus[i][j] != Board::Status::none)
 				winningMap[i][j].linesCanContribute = 0;
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++)
-			cout << winningMap[i][j].linesCanContribute;
-		cout << endl;
-	}
 }
+/// <summary>
+/// This Function returns which point to return as a putting location.
+/// <see cref="findNoneBlank"/>
+/// <see cref="findEmergencePoint"/>
+/// </summary>
+/// <param name="Point">Researched point' informations about winning tactic</param>
+/// <remarks>
+/// This function is private. Do not try to call this function.
+/// </remarks>
 Board::Coordinate BoardRecognizer::returnWhichToChoose(BoardRecognizer::Point(&point)[3][3])
 
 {
@@ -319,6 +330,7 @@ Board::Coordinate BoardRecognizer::returnWhichToChoose(BoardRecognizer::Point(&p
 	list<Board::Coordinate> winningPoint;
 	list<Board::Coordinate> both;
 	list<Board::Coordinate> blankCandidates;
+	// Find the points which are most win-promising
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -340,6 +352,7 @@ Board::Coordinate BoardRecognizer::returnWhichToChoose(BoardRecognizer::Point(&p
 			}
 		}
 	}
+	// Find the best place where can effectively minimize possibility to lose, and maximize possibility to win
 	for (list<Board::Coordinate>::iterator iteratorForEmergencePoint = emergencePoint.begin(); iteratorForEmergencePoint != emergencePoint.end(); iteratorForEmergencePoint++)
 	{
 		for (list<Board::Coordinate>::iterator iteratorForWinningPoint = winningPoint.begin(); iteratorForWinningPoint != winningPoint.end(); iteratorForWinningPoint++)
@@ -351,6 +364,7 @@ Board::Coordinate BoardRecognizer::returnWhichToChoose(BoardRecognizer::Point(&p
 			}
 		}
 	}
+	// Determine which information to base on.
 	switch (both.size())
 	{
 	case 1:
@@ -378,6 +392,13 @@ Board::Coordinate BoardRecognizer::returnWhichToChoose(BoardRecognizer::Point(&p
 		return BoardRecognizer::chooseBaseonPosition(both);
 	}
 }
+/// <summary>
+/// This Function returns where to put if two or more point has same number of lines can complete and both emergence.
+/// </summary>
+/// <param name="input">Recieve candidate coordinates</param>
+/// <remarks>
+/// This function is private. Do not try to call this function.
+/// </remarks>
 Board::Coordinate BoardRecognizer::chooseBaseonPosition(list<Board::Coordinate>& input)
 {
 	Board::Coordinate forReturn = {-1,-1};
@@ -409,6 +430,13 @@ Board::Coordinate BoardRecognizer::chooseBaseonPosition(list<Board::Coordinate>&
 	}
 	return forReturn;
 }
+/// <summary>
+/// This Function returns blank points.
+/// </summary>
+/// <param name="input">Recieve winningmap</param>
+/// <remarks>
+/// This function is private. Do not try to call this function.
+/// </remarks>
 list<Board::Coordinate> BoardRecognizer::returnBlankList(BoardRecognizer::Point(&points)[3][3])
 {
 	list<Board::Coordinate> listToReturn;

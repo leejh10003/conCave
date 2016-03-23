@@ -23,6 +23,7 @@ Board::Board(unsigned int xDimInput, unsigned int yDimInput) : xDimSize(xDimInpu
 
 bool Board::putConcaveStone(Board::Coordinate inputCoordinate, Board::Status statusValue)
 {
+	//Check lower and higher bound
 	if (checkBoundry(inputCoordinate) == true &&
 		checkIsStatusNone(inputCoordinate) == true)
 	{
@@ -62,12 +63,33 @@ void Board::printBoard()
 
 
 
+/// <summary>
+/// This function assign board's stone matrix
+/// </summary>
+/// <param name="x">
+/// X dimension size of board
+/// </param>
+/// <param name="y">
+/// y dimension size of board
+/// </param>
+/// <remarks>
+/// This function is private. Do not call it from other class or instance.
+/// </remarks>
 void Board::assignBoard(int x, int y)
 {
 	this->boardMatrix.assign(x, vector< Board::Status >(y, Board::Status::none));
 }
 
 
+/// <summary>
+/// This function check boundry for function putConcaveStone(Board::Coordinate inputCoordinate, Board::Status statusValue).
+/// <see cref="putConcaveStone"/>
+/// </summary>
+/// <param name="inputCoordinate">
+/// Coordinate input from user.
+/// </param>
+/// <remarks>
+/// This function is private. Do not call it from other class or instance.
 bool Board::checkBoundry(Board::Coordinate inputCoordinate)
 {
 	if (inputCoordinate.x >= this->xDimSize || inputCoordinate.y >= this->yDimSize ||
@@ -80,8 +102,14 @@ bool Board::checkBoundry(Board::Coordinate inputCoordinate)
 		return true;
 	}
 }
-
-
+/// <summary>
+/// This function check one position wether it is empty or not.
+/// </summary>
+/// <param name="inputCoordinate">
+/// Coordinate input from caller.
+/// </param>
+/// <remarks>
+/// This function is private. Do not call it from other class or instance.
 bool Board::checkIsStatusNone(Board::Coordinate inputCoordinate)
 {
 	if (this->boardMatrix[inputCoordinate.x][inputCoordinate.y] != Board::Status::none)
@@ -94,7 +122,11 @@ bool Board::checkIsStatusNone(Board::Coordinate inputCoordinate)
 	}
 }
 
-
+/// <summary>
+/// This function make string which is dynamic-size and printed to console later
+/// </summary>
+/// <remarks>
+/// This function is private. Do not call it from other class or instance.
 void Board::displayStringMake()
 {
 	for (int i = 0; i < xDimSize; i++) {
@@ -103,6 +135,12 @@ void Board::displayStringMake()
 		stringForDisplay.append(1, '\n');
 	}
 }
+
+/// <summary>
+/// This function return character which is suit for position and color
+/// </summary>
+/// <remarks>
+/// This function is private. Do not call it from other class or instance.
 char Board::statusToChar(Board::Coordinate boardSize, Board::Coordinate pointCoordinate, Board::Status color)
 {
 	int maxX = boardSize.x - 1;
