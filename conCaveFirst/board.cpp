@@ -4,7 +4,7 @@
 
 
 
-Board::Board(unsigned int size) : xDimSize(size), yDimSize(size)
+Board::Board(unsigned int size) : xDimSize(size), yDimSize(size), maxStoneNum(size * size)
 {
 	assignBoard(size, size);
 };
@@ -12,9 +12,10 @@ Board::Board(unsigned int size) : xDimSize(size), yDimSize(size)
 Board::Board(Board::Coordinate inputCoordinate)
 {
 	assignBoard(inputCoordinate.x, inputCoordinate.y);
+	maxStoneNum = inputCoordinate.x * inputCoordinate.y;
 }
 
-Board::Board(unsigned int xDimInput, unsigned int yDimInput) : xDimSize(xDimInput), yDimSize(yDimInput)
+Board::Board(unsigned int xDimInput, unsigned int yDimInput) : xDimSize(xDimInput), yDimSize(yDimInput), maxStoneNum(xDimInput * yDimInput)
 {
 	assignBoard(xDimInput, yDimInput);
 }
@@ -26,6 +27,7 @@ bool Board::putConcaveStone(Board::Coordinate inputCoordinate, Board::Status sta
 		checkIsStatusNone(inputCoordinate) == true)
 	{
 		this->boardMatrix[inputCoordinate.x][inputCoordinate.y] = statusValue;
+		currentStoneNum += 1;
 		return true;
 	}
 	else
@@ -34,6 +36,10 @@ bool Board::putConcaveStone(Board::Coordinate inputCoordinate, Board::Status sta
 	}
 }
 
+bool Board::isFull()
+{
+	return currentStoneNum < maxStoneNum ? false : true;
+}
 
 vector< vector< Board::Status > > Board::getBoard()
 {
@@ -106,33 +112,33 @@ char Board::statusToChar(Board::Coordinate boardSize, Board::Coordinate pointCoo
 	switch (color)
 	{
 	case Board::black:
-		return '¡Ü';
+		return 'b';
 		break;
 	case Board::white:
-		return '¡Û';
+		return 'w';
 		break;
 	default:
 		if (currentX == 0)
 			if (currentY == 0)
-				return '¦¦';
+				return 'x';
 			else if (currentY == maxY)
-				return '¦£';
+				return 'x';
 			else
-				return '¦§';
+				return 'x';
 		else if (currentX == maxX)
 			if (currentY == 0)
-				return '¦¥';
+				return 'x';
 			else if (currentY == maxY)
-				return '¦¤';
+				return 'x';
 			else
-				return '¦©';
+				return 'x';
 		else
 			if (currentY == 0)
-				return '¦ª';
+				return 'x';
 			else if (currentY == maxY)
-				return '¦¨';
+				return 'x';
 			else
-				return '¦«';
+				return 'x';
 			break;
 	}
 }

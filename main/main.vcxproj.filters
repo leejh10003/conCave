@@ -15,6 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
+    <ClCompile Include="main.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\conCaveFirst\board.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\conCaveFirst.conCaveBoardRecognizer\boardRecognizer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\conCaveFirst.playDisplay\Play.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\conCaveFirst\board.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\conCaveFirst.conCaveBoardRecognizer\boardRecognizer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\conCaveFirst.playDisplay\Play.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

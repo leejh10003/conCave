@@ -25,6 +25,7 @@ public:
 	Board(Board::Coordinate inputCoordinate);
 	Board(unsigned int xDimInput, unsigned int yDimInput);
 	bool putConcaveStone(Coordinate inputCoordinate, Board::Status statusValue);
+	bool isFull();
 	vector< vector< Board::Status > > getBoard();
 	Board::Coordinate getBoardSize();
 	void printBoard();
@@ -45,6 +46,8 @@ public:
 private:
 	int xDimSize = 0;
 	int yDimSize = 0;
+	int maxStoneNum;
+	int currentStoneNum = 0;
 	string stringForDisplay;
 	vector< vector< Board::Status > > boardMatrix;
 
