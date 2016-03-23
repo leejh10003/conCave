@@ -23,12 +23,14 @@ void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardSta
 	list<Board::Coordinate> listEmergenceLines;
 	for (int i = 0; i < 3; i++)
 	{
+		cout << "downline " << i << endl;
 		opponentCount = 0;
 		blankCount = 0;
 		for (int j = 0; j < 3; j++)
 		{
 			if (boardStatus[i][j] == myColor)
 			{
+				cout << "mine ";
 				continue;
 			}
 			else if (boardStatus[i][j] == Board::Status::none)
@@ -36,25 +38,31 @@ void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardSta
 				blankPoint.x = i;
 				blankPoint.y = j;
 				blankCount++;
+				cout << "blank added ";
 			}
 			else
 			{
 				opponentCount++;
-			}
-			if (opponentCount == 2)
-			{
-				listEmergenceLines.push_back(blankPoint);
+				cout << "opponent added ";
 			}
 		}
+		if (opponentCount == 2 && blankCount == 1)
+		{
+			cout << "added " << endl;
+			listEmergenceLines.push_back(blankPoint);
+		}
+		cout << endl;
 	}
 	for (int i = 0; i < 3; i++)
 	{
+		cout << "right" << i << endl;
 		opponentCount = 0;
 		blankCount = 0;
 		for (int j = 0; j < 3; j++)
 		{
 			if (boardStatus[j][i] == myColor)
 			{
+				cout << "mine ";
 				continue;
 			}
 			else if (boardStatus[j][i] == Board::Status::none)
@@ -62,23 +70,29 @@ void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardSta
 				blankPoint.x = j;
 				blankPoint.y = i;
 				blankCount++;
+				cout << "blank added ";
 			}
 			else
 			{
 				opponentCount++;
-			}
-			if (opponentCount == 2)
-			{
-				listEmergenceLines.push_back(blankPoint);
+				cout << "opponent added ";
 			}
 		}
+		if (opponentCount == 2 && blankCount == 1)
+		{
+			cout << "added " << endl;
+			listEmergenceLines.push_back(blankPoint);
+		}
+		cout << endl;
 	}
+	cout << "diagonal" << endl;
 	for (int i = 0; i < 3; i++)
 	{
 		opponentCount = 0;
 		blankCount = 0;
 		if (boardStatus[i][i] == myColor)
 		{
+			cout << "mine ";
 			continue;
 		}
 		else if (boardStatus[i][i] == Board::Status::none)
@@ -86,22 +100,28 @@ void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardSta
 			blankPoint.x = i;
 			blankPoint.y = i;
 			blankCount++;
+			cout << "blank added ";
 		}
 		else
 		{
 			opponentCount++;
-		}
-		if (opponentCount == 2)
-		{
-			listEmergenceLines.push_back(blankPoint);
+			cout << "opponent added ";
 		}
 	}
+	if (opponentCount == 2 && blankCount == 1)
+	{
+		cout << "added" << endl;
+		listEmergenceLines.push_back(blankPoint);
+	}
+	cout << endl;
+	cout << "anti diagonal" << endl;
 	for (int i = 0; i < 3; i++)
 	{
 		opponentCount = 0;
 		blankCount = 0;
 		if (boardStatus[i][2 - i] == myColor)
 		{
+			cout << "mine ";
 			continue;
 		}
 		else if (boardStatus[i][2 - i] == Board::Status::none)
@@ -109,15 +129,24 @@ void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardSta
 			blankPoint.x = i;
 			blankPoint.y = 2 - i;
 			blankCount++;
+			cout << "blank added";
 		}
 		else
 		{
 			opponentCount++;
+			cout << "opponent added";
 		}
-		if (opponentCount == 2)
-		{
-			listEmergenceLines.push_back(blankPoint);
-		}
+	}
+	if (opponentCount == 2 && blankCount == 1)
+	{
+		cout << "added" << endl;
+		listEmergenceLines.push_back(blankPoint);
+	}
+	cout << endl;
+	for (list<Board::Coordinate>::iterator iterator = listEmergenceLines.begin(); iterator != listEmergenceLines.end(); iterator++)
+	{
+		winningMap[iterator->x][iterator->y].isEmergence = true;
+		cout << "Pushed (" << iterator->x << ", " << iterator->y << ')' << endl;
 	}
 }
 void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point(&winningMap)[3][3])
@@ -125,7 +154,7 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 	bool isThereBlack;
 	bool isThereWhite;
 	list<Board::Coordinate> addedCoordinate;
-	cout << "Downside:" << endl;
+	//cout << "Downside:" << endl;
 	for (int i = 0; i < 3; i++)
 	{
 		isThereBlack = false;
@@ -141,7 +170,7 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 				isThereWhite = true; break;
 			case Board::Status::none:
 				addedCoordinate.push_back(Board::Coordinate{ i, j });
-				cout << '(' << i << ',' << j << ")Pushed" << endl;
+				//cout << '(' << i << ',' << j << ")Pushed" << endl;
 			default:
 				continue;
 			}
@@ -155,12 +184,12 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 		}
 		addedCoordinate.clear();
 	}
-	for (int i = 0; i < 3; i++) {
+	/*for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++)
 			cout << winningMap[i][j].linesCanContribute;
 		cout << endl;
-	}
-	cout << "Rightside:" << endl;
+	}*/
+	//cout << "Rightside:" << endl;
 	for (int i = 0; i < 3; i++)
 	{
 		isThereBlack = false;
@@ -176,7 +205,7 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 				isThereWhite = true; break;
 			case Board::Status::none:
 				addedCoordinate.push_back(Board::Coordinate{ j, i });
-				cout << '(' << i << ',' << j << ")Pushed" << endl;
+				//cout << '(' << i << ',' << j << ")Pushed" << endl;
 			default:
 				continue;
 			}
@@ -190,12 +219,12 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 		}
 		addedCoordinate.clear();
 	}
-	for (int i = 0; i < 3; i++) {
+	/*for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++)
 			cout << winningMap[i][j].linesCanContribute;
 		cout << endl;
-	}
-	cout << "Diagonal:" << endl;
+	}*/
+	//cout << "Diagonal:" << endl;
 	isThereBlack = false;
 	isThereWhite = false;
 	for (int i = 0; i < 3; i++)
@@ -208,35 +237,35 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 			isThereWhite = true; break;
 		case Board::Status::none:
 			addedCoordinate.push_back(Board::Coordinate{ i, i });
-			cout << '(' << i << ',' << i << ")Pushed" << endl;
+			//cout << '(' << i << ',' << i << ")Pushed" << endl;
 		default:
 			continue;
 		}
 	}
-	if (isThereBlack == false) 
+	/*if (isThereBlack == false) 
 		cout << "no black" << endl;
 	else
 		cout <<"Black exist"<< endl;
 	if (isThereWhite == false)
 		cout << "no white" << endl;
 	else
-		cout << "White exist" << endl;
+		cout << "White exist" << endl;*/
 	if (isThereBlack == false || isThereWhite == false)
 	{
-		if (addedCoordinate.begin() == addedCoordinate.end()) cout << "fuck" << endl;
+		//if (addedCoordinate.begin() == addedCoordinate.end()) cout << "fuck" << endl;
 		for (list<Board::Coordinate>::iterator iterator = addedCoordinate.begin(); iterator != addedCoordinate.end(); iterator++)
 		{
-			cout << "adding" << iterator->x << ',' << iterator->y << endl;
+			//cout << "adding" << iterator->x << ',' << iterator->y << endl;
 			winningMap[iterator->x][iterator->y].linesCanContribute += 1;
 		}
 	}
 	addedCoordinate.clear();
-	for (int i = 0; i < 3; i++) {
+	/*for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++)
 			cout << winningMap[i][j].linesCanContribute;
 		cout << endl;
-	}
-	cout << "Anti Diagonal:" << endl;
+	}*/
+	//cout << "Anti Diagonal:" << endl;
 	isThereBlack = false;
 	isThereWhite = false;
 	for (int i = 0; i < 3; i++)
@@ -249,29 +278,33 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 			isThereWhite = true; break;
 		case Board::Status::none:
 			addedCoordinate.push_back(Board::Coordinate{ i, 2-i });
-			cout << '(' << i << ',' << 2-i << ")Pushed" << endl;
+			//cout << '(' << i << ',' << 2-i << ")Pushed" << endl;
 		default:
 			continue;
 		}
 	}
-	if (isThereBlack == false)
+	/*if (isThereBlack == false)
 		cout << "no black" << endl;
 	else
 		cout << "Black exist" << endl;
 	if (isThereWhite == false)
 		cout << "no white" << endl;
 	else
-		cout << "White exist" << endl;
+		cout << "White exist" << endl;*/
 	if (isThereBlack == false || isThereWhite == false)
 	{
-		if (addedCoordinate.begin() == addedCoordinate.end()) cout << "fuck" << endl;
+		//if (addedCoordinate.begin() == addedCoordinate.end()) cout << "fuck" << endl;
 		for (list<Board::Coordinate>::iterator iterator = addedCoordinate.begin(); iterator != addedCoordinate.end(); iterator++)
 		{
-			cout << "adding" << iterator->x << ',' << iterator->y << endl;
+			//cout << "adding" << iterator->x << ',' << iterator->y << endl;
 			winningMap[iterator->x][iterator->y].linesCanContribute += 1;
 		}
 	}
 	addedCoordinate.clear();
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 3; j++)
+			if (boardStatus[i][j] != Board::Status::none)
+				winningMap[i][j].linesCanContribute = 0;
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++)
 			cout << winningMap[i][j].linesCanContribute;

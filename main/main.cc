@@ -3,4 +3,5 @@
 int main()
 {
 	Play play = Play();
+	system("pause");
 }

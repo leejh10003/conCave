@@ -99,7 +99,7 @@ void Board::displayStringMake()
 {
 	for (int i = 0; i < xDimSize; i++) {
 		for (int j = 0; j < xDimSize; j++)
-			stringForDisplay += statusToChar(Board::Coordinate{xDimSize, yDimSize}, Board::Coordinate{ i, j }, boardMatrix[i][j]);
+			stringForDisplay += statusToChar(Board::Coordinate{xDimSize, yDimSize}, Board::Coordinate{ i, j }, boardMatrix[j][i]);
 		stringForDisplay.append(1, '\n');
 	}
 }

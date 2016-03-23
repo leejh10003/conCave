@@ -126,13 +126,13 @@ Board::Coordinate Play::queryCoordinateToPutStone()
 	bool isMatched = false;
 	while (isMatched == false) {
 		cout << "input coordinate to put stone in (x, y) form: ";
-		fflush(stdout);
-		fflush(stdin);
-		cin >> inputFromUser;
-		fflush(stdout);
-		fflush(stdin);
+		cin.clear();
+		getline(cin, inputFromUser);
+		cin.clear();
 		isMatched = regex_match(inputFromUser, inputPattern);
-		switch (isMatched)
+		if (isMatched == false)
+			cout << "Wrong form. ";
+		/*switch (isMatched)
 		{
 		case true:
 			cout << "true" << endl;
@@ -142,7 +142,7 @@ Board::Coordinate Play::queryCoordinateToPutStone()
 			continue;
 		default:
 			break;
-		}
+		}*/
 	}
 	inputFromUser = regex_replace(inputFromUser, regex("[\\s]*"), string(""));
 	inputFromUser = regex_replace(inputFromUser, regex("[(]"), string(""));
@@ -159,15 +159,15 @@ Board::Status Play::step(Board& boardToPlay, Board::Status playerColor)
 	switch (playerColor)
 	{
 	case Board::Status::black:
-		boardToPlay.printBoard();
-		fflush(stdin);
 		userInput = this->queryCoordinateToPutStone();
 		while (boardToPlay.putConcaveStone(userInput, Board::Status::black) == false) {};
+		boardToPlay.printBoard();
 		if (winCheck(boardToPlay) != Board::Status::none) return winCheck(boardToPlay);
 		if (boardToPlay.isFull())
 			return Board::Status::none;
 		computerPutdown = BoardRecognizer::whereToPut(boardToPlay.getBoard(), Board::Status::white);
 		boardToPlay.putConcaveStone(computerPutdown, Board::Status::white);
+		boardToPlay.printBoard();
 		if (winCheck(boardToPlay) != Board::Status::none) return winCheck(boardToPlay);
 		if (boardToPlay.isFull())
 			return Board::Status::none;
@@ -175,13 +175,13 @@ Board::Status Play::step(Board& boardToPlay, Board::Status playerColor)
 	case Board::Status::white:
 		computerPutdown = BoardRecognizer::whereToPut(boardToPlay.getBoard(), Board::Status::black);
 		boardToPlay.putConcaveStone(computerPutdown, Board::Status::black);
+		boardToPlay.printBoard();
 		if (winCheck(boardToPlay) != Board::Status::none) return winCheck(boardToPlay);
 		if (boardToPlay.isFull())
 			return Board::Status::none;
-		boardToPlay.printBoard();
-		fflush(stdin);
-		userInput = this->queryCoordinateToPutStone();
-		while (boardToPlay.putConcaveStone(userInput, Board::Status::white) == false) {};
+		do {
+			userInput = this->queryCoordinateToPutStone();
+		} while (boardToPlay.putConcaveStone(userInput, Board::Status::white) == false);
 		if (winCheck(boardToPlay) != Board::Status::none) return winCheck(boardToPlay);
 		if (boardToPlay.isFull())
 			return Board::Status::none;
