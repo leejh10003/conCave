@@ -4,21 +4,11 @@
 
 
 
-Board::Board(unsigned int size) : xDimSize(size), yDimSize(size), maxStoneNum(size * size)
+Board::Board(unsigned int size) : dimSize(size)
 {
 	assignBoard(size, size);
+	maxStoneNum = dimSize * dimSize;
 };
-
-Board::Board(Board::Coordinate inputCoordinate)
-{
-	assignBoard(inputCoordinate.x, inputCoordinate.y);
-	maxStoneNum = inputCoordinate.x * inputCoordinate.y;
-}
-
-Board::Board(unsigned int xDimInput, unsigned int yDimInput) : xDimSize(xDimInput), yDimSize(yDimInput), maxStoneNum(xDimInput * yDimInput)
-{
-	assignBoard(xDimInput, yDimInput);
-}
 
 
 bool Board::putConcaveStone(Board::Coordinate inputCoordinate, Board::Status statusValue)
@@ -50,7 +40,7 @@ vector< vector< Board::Status > > Board::getBoard()
 
 Board::Coordinate Board::getBoardSize()
 {
-	return Board::Coordinate{ xDimSize, yDimSize };
+	return Board::Coordinate{ dimSize, dimSize };
 }
 
 void Board::printBoard()
@@ -92,7 +82,7 @@ void Board::assignBoard(int x, int y)
 /// This function is private. Do not call it from other class or instance.
 bool Board::checkBoundry(Board::Coordinate inputCoordinate)
 {
-	if (inputCoordinate.x >= this->xDimSize || inputCoordinate.y >= this->yDimSize ||
+	if (inputCoordinate.x >= this->dimSize || inputCoordinate.y >= this->dimSize ||
 		inputCoordinate.x  < 0 || inputCoordinate.y < 0)
 	{
 		return false;
@@ -129,10 +119,10 @@ bool Board::checkIsStatusNone(Board::Coordinate inputCoordinate)
 /// This function is private. Do not call it from other class or instance.
 void Board::displayStringMake()
 {
-	for (int i = 0; i < xDimSize; i++) {
-		for (int j = 0; j < xDimSize; j++)
-			stringForDisplay += statusToString(Board::Coordinate{xDimSize, yDimSize}, Board::Coordinate{ i, j }, boardMatrix[j][i]);
-		if (i < xDimSize -1 )
+	for (int i = 0; i < dimSize; i++) {
+		for (int j = 0; j < dimSize; j++)
+			stringForDisplay += statusToString(Board::Coordinate{dimSize, dimSize}, Board::Coordinate{ i, j }, boardMatrix[j][i]);
+		if (i < dimSize -1 )
 			stringForDisplay.append(1, '\n');
 	}
 }

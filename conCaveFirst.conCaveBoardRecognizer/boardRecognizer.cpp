@@ -21,7 +21,7 @@ void BoardRecognizer::findNoneBlank(vector<vector<Board::Status>>& boardStatus, 
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
 			if (boardStatus[i][j] == Board::Status::none)//find place where is blank
-				winningMap[i][j].isNone == true;
+				winningMap[i][j].isMeaningful = true;
 }
 /// <summary>
 /// This function find the place in concaveBoard where is important because if not put here, the opponent will win
@@ -440,7 +440,7 @@ list<Board::Coordinate> BoardRecognizer::returnBlankList(BoardRecognizer::Point(
 	list<Board::Coordinate> listToReturn;
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
-			if (points[i][j].isNone)
+			if (points[i][j].isMeaningful)
 				listToReturn.push_back(Board::Coordinate{ i, j });
 	return listToReturn;
 }

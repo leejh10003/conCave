@@ -15,7 +15,7 @@ public:
 private:
 	struct Point {
 		bool isEmergence = false;
-		bool isNone = false;
+		bool isMeaningful = false;
 		int linesCanContribute = 0;
 	};
 	static void findNoneBlank(vector<vector<Board::Status>>& boardStatus, BoardRecognizer::Point(&winningMap)[3][3]);
