@@ -1,11 +1,12 @@
 #include "boardRecognizer.h"
-Board::Coordinate BoardRecognizer::whereToPut(vector<vector<Board::Status>>& boardStatus, Board::Status color)
+Board::Coordinate BoardRecognizer::whereToPut(vector<vector<Board::Status>>(&boardStatus), Board::Status color, Board::Coordinate size)
 {
-	BoardRecognizer::Point winningMap[3][3];
-	findNoneBlank(boardStatus, winningMap);
+	vector<vector<BoardRecognizer::Point>> winningMap;
+	winningMap.assign(size.x, vector<Point>(size.y));
+	findMeaningful(boardStatus, winningMap);
 	findEmergencePoint(boardStatus, color, winningMap);
 	winnignMapComplete(boardStatus, color, winningMap);
-	return returnWhichToChoose(winningMap);
+	return returnWhichToChoose(winningMap, boardStatus);
 }
 /// <summary>
 /// This function find the place in concaveBoard where is not blank and modify winningMap
@@ -15,11 +16,11 @@ Board::Coordinate BoardRecognizer::whereToPut(vector<vector<Board::Status>>& boa
 /// <remarks>
 /// This function is private. Do not try to call this function.
 /// </remarks>
-void BoardRecognizer::findNoneBlank(vector<vector<Board::Status>>& boardStatus, BoardRecognizer::Point(&winningMap)[3][3])
+void BoardRecognizer::findMeaningful(vector<vector<Board::Status>>& boardStatus, vector<vector<BoardRecognizer::Point>>(&winningMap))
 {
 	//Iterates over every points
-	for (int i = 0; i < 3; i++)
-		for (int j = 0; j < 3; j++)
+	for (int i = 0; i < winningMap.size(); i++)
+		for (int j = 0; j < winningMap[i].size(); j++)
 			if (boardStatus[i][j] == Board::Status::none)//find place where is blank
 				winningMap[i][j].isMeaningful = true;
 }
@@ -32,7 +33,7 @@ void BoardRecognizer::findNoneBlank(vector<vector<Board::Status>>& boardStatus, 
 /// <remarks>
 /// This function is private. Do not try to call this function.
 /// </remarks>
-void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point(&winningMap)[3][3])
+void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap))
 
 {
 	int opponentCount;
@@ -182,7 +183,7 @@ void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardSta
 /// <remarks>
 /// This function is private. Do not try to call this function.
 /// </remarks>
-void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point(&winningMap)[3][3])
+void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap))
 {
 	bool isThereBlack;
 	bool isThereWhite;
@@ -320,7 +321,7 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 /// <remarks>
 /// This function is private. Do not try to call this function.
 /// </remarks>
-Board::Coordinate BoardRecognizer::returnWhichToChoose(BoardRecognizer::Point(&point)[3][3])
+Board::Coordinate BoardRecognizer::returnWhichToChoose(vector<vector<BoardRecognizer::Point>>(&winningMap), vector<vector<Board::Status>>& boardStatus)
 
 {
 	int best = 0;
@@ -329,11 +330,11 @@ Board::Coordinate BoardRecognizer::returnWhichToChoose(BoardRecognizer::Point(&p
 	list<Board::Coordinate> both;
 	list<Board::Coordinate> blankCandidates;
 	// Find the points which are most win-promising
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < winningMap.size(); i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < winningMap[i].size(); j++)
 		{
-			int thisPointLines = point[i][j].linesCanContribute;
+			int thisPointLines = winningMap[i][j].linesCanContribute;
 			if (best < thisPointLines)
 			{
 				winningPoint.clear();
@@ -344,7 +345,7 @@ Board::Coordinate BoardRecognizer::returnWhichToChoose(BoardRecognizer::Point(&p
 			{
 				winningPoint.push_back(Board::Coordinate{ i, j });
 			}
-			if (point[i][j].isEmergence)
+			if (winningMap[i][j].isEmergence)
 			{
 				emergencePoint.push_back(Board::Coordinate{ i, j });
 			}
@@ -378,7 +379,7 @@ Board::Coordinate BoardRecognizer::returnWhichToChoose(BoardRecognizer::Point(&p
 			case 1:
 				return *winningPoint.begin();
 			case 0:
-				blankCandidates = returnBlankList(point);
+				blankCandidates = returnBlankList(winningMap);
 				return chooseBaseonPosition(blankCandidates);
 			default:
 				return BoardRecognizer::chooseBaseonPosition(winningPoint);
@@ -435,12 +436,12 @@ Board::Coordinate BoardRecognizer::chooseBaseonPosition(list<Board::Coordinate>&
 /// <remarks>
 /// This function is private. Do not try to call this function.
 /// </remarks>
-list<Board::Coordinate> BoardRecognizer::returnBlankList(BoardRecognizer::Point(&points)[3][3])
+list<Board::Coordinate> BoardRecognizer::returnBlankList(vector<vector<BoardRecognizer::Point>>(&winningMap))
 {
 	list<Board::Coordinate> listToReturn;
-	for (int i = 0; i < 3; i++)
-		for (int j = 0; j < 3; j++)
-			if (points[i][j].isMeaningful)
+	for (int i = 0; i < winningMap.size(); i++)
+		for (int j = 0; j < winningMap[i].size(); j++)
+			if (winningMap[i][j].isMeaningful)
 				listToReturn.push_back(Board::Coordinate{ i, j });
 	return listToReturn;
 }

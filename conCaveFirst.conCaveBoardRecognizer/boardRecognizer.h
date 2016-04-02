@@ -11,7 +11,7 @@ public:
 	/// </summary>
 	/// <param name="boardStatus">Act as concave board array</param>
 	/// <param name="color">Act as concave board array</param>
-	static Board::Coordinate whereToPut(vector<vector<Board::Status>>& boardStatus, Board::Status color);
+	static Board::Coordinate whereToPut(vector<vector<Board::Status>>(&boardStatus), Board::Status color, Board::Coordinate size);
 private:
 	struct Point {
 		bool isEmergence = false;
@@ -19,10 +19,10 @@ private:
 		int linesCanContribute = 0;
 	};
 	static void findProhibittedPlace(vector<vector<Board::Status>>& boardStatus, vector<vector<BoardRecognizer::Point>>(&winningMap));
-	static void findNoneBlank(vector<vector<Board::Status>>& boardStatus, BoardRecognizer::Point(&winningMap)[3][3]);
-	static void findEmergencePoint(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point(&winningMap)[3][3]);
-	static void winnignMapComplete(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point(&winningMap)[3][3]);
-	static Board::Coordinate returnWhichToChoose(BoardRecognizer::Point(&point)[3][3]);
+	static void findMeaningful(vector<vector<Board::Status>>& boardStatus, vector<vector<BoardRecognizer::Point>>(&winningMap));
+	static void findEmergencePoint(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap));
+	static void winnignMapComplete(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap));
+	static Board::Coordinate BoardRecognizer::returnWhichToChoose(vector<vector<BoardRecognizer::Point>>(&winningMap), vector<vector<Board::Status>>& boardStatus);
 	static Board::Coordinate chooseBaseonPosition(list<Board::Coordinate>& input);
-	static list<Board::Coordinate> returnBlankList(BoardRecognizer::Point(&points)[3][3]);
+	static list<Board::Coordinate> returnBlankList(vector<vector<BoardRecognizer::Point>>(&winningMap));
 };

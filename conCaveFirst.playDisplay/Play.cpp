@@ -181,6 +181,7 @@ Board::Status Play::step(Board& boardToPlay, Board::Status playerColor)
 	Board::Status computerColor;
 	Board::Coordinate userInput;
 	Board::Coordinate computerPutdown;
+	Board::Coordinate boardSize{ boardToPlay.getBoardSize().x, boardToPlay.getBoardSize().y };
 	switch (playerColor)// Each step of calling is different because of playerside's color
 	{
 	case Board::Status::black:
@@ -190,7 +191,7 @@ Board::Status Play::step(Board& boardToPlay, Board::Status playerColor)
 		if (winCheck(boardToPlay) != Board::Status::none) return winCheck(boardToPlay);
 		if (boardToPlay.isFull())
 			return Board::Status::none;
-		computerPutdown = BoardRecognizer::whereToPut(boardToPlay.getBoard(), Board::Status::white);
+		computerPutdown = BoardRecognizer::whereToPut(boardToPlay.getBoard(), Board::Status::white, boardSize);
 		boardToPlay.putConcaveStone(computerPutdown, Board::Status::white);
 		boardToPlay.printBoard();
 		if (winCheck(boardToPlay) != Board::Status::none) return winCheck(boardToPlay);
@@ -198,7 +199,7 @@ Board::Status Play::step(Board& boardToPlay, Board::Status playerColor)
 			return Board::Status::none;
 		break;
 	case Board::Status::white:
-		computerPutdown = BoardRecognizer::whereToPut(boardToPlay.getBoard(), Board::Status::black);
+		computerPutdown = BoardRecognizer::whereToPut(boardToPlay.getBoard(), Board::Status::black, boardSize);
 		boardToPlay.putConcaveStone(computerPutdown, Board::Status::black);
 		boardToPlay.printBoard();
 		if (winCheck(boardToPlay) != Board::Status::none) return winCheck(boardToPlay);
