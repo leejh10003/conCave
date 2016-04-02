@@ -45,6 +45,7 @@ Board::Coordinate Board::getBoardSize()
 
 void Board::printBoard()
 {
+	system("cls");
 	displayStringMake();
 	cout << stringForDisplay << endl;
 	stringForDisplay.clear();
@@ -149,25 +150,25 @@ string Board::statusToString(Board::Coordinate boardSize, Board::Coordinate poin
 	default:
 		if (currentX == 0)
 			if (currentY == 0)
-				return " X";
+				return "¦£";
 			else if (currentY == maxY)
-				return " X";
+				return "¦¤";
 			else
-				return " X";
+				return "¦¨";
 		else if (currentX == maxX)
 			if (currentY == 0)
-				return " X";
+				return "¦¦";
 			else if (currentY == maxY)
-				return " X";
+				return "¦¥";
 			else
-				return " X";
+				return "¦ª";
 		else
 			if (currentY == 0)
-				return " X";
+				return "¦§";
 			else if (currentY == maxY)
-				return " X";
+				return "¦©";
 			else
-				return " X";
+				return "¦«";
 			break;
 	}
 }

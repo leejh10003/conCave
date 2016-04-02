@@ -18,6 +18,7 @@ private:
 		bool isMeaningful = false;
 		int linesCanContribute = 0;
 	};
+	static void findProhibittedPlace(vector<vector<Board::Status>>& boardStatus, vector<vector<BoardRecognizer::Point>>(&winningMap));
 	static void findNoneBlank(vector<vector<Board::Status>>& boardStatus, BoardRecognizer::Point(&winningMap)[3][3]);
 	static void findEmergencePoint(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point(&winningMap)[3][3]);
 	static void winnignMapComplete(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, BoardRecognizer::Point(&winningMap)[3][3]);
