@@ -190,13 +190,13 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 	list<Board::Coordinate> addedCoordinate;
 	// Calculate each position's number of lines where it can contribute to.
 	// Vertical
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < winningMap.size(); i++)
 	{
 		isThereBlack = false;
 		isThereWhite = false;
 
 		// Search lines' stones
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < winningMap[i].size(); j++)
 		{
 			switch (boardStatus[i][j])
 			{
@@ -222,13 +222,13 @@ void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardSta
 		addedCoordinate.clear();
 	}
 	// Horizontal
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < winningMap.size(); i++)
 	{
 		isThereBlack = false;
 		isThereWhite = false;
 
 		// Search lines' stones
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < winningMap[i].size(); j++)
 		{
 			switch (boardStatus[j][i])
 			{
