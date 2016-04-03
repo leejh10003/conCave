@@ -20,9 +20,12 @@ void BoardRecognizer::findMeaningful(vector<vector<Board::Status>>& boardStatus,
 {
 	//Iterates over every points
 	for (int i = 0; i < winningMap.size(); i++)
-		for (int j = 0; j < winningMap[i].size(); j++)
+		for (int j = 0; j < winningMap[i].size(); j++) {
 			if (boardStatus[i][j] == Board::Status::none)//find place where is blank
 				winningMap[i][j].isMeaningful = true;
+			if (BoardRecognizer::prohibitted(boardStatus, winningMap.size(), i, j, Board::Status::black))
+				winningMap[i][j].isMeaningful = false;
+		}
 }
 /// <summary>
 /// This function find the place in concaveBoard where is important because if not put here, the opponent will win
