@@ -445,3 +445,138 @@ list<Board::Coordinate> BoardRecognizer::returnBlankList(vector<vector<BoardReco
 				listToReturn.push_back(Board::Coordinate{ i, j });
 	return listToReturn;
 }
+
+bool BoardRecognizer::prohibitted(vector<vector<Board::Status>>& boardStatus, int dimSize, int x, int y, Board::Status side)
+{
+	int* lineNumMap;
+	int i, j;
+	int sum[4] = { 0, };
+	int tes = 0;
+	int toWhere;
+	for (i = -1; i < 2; i++)
+		for (j = -1; j < 2; j++)
+			if (i != 0 || j != 0) {
+				toWhere = (int)BoardRecognizer::sideCollect(i, j);
+				if (boundaryCheck(i, j, {x, y}, -2, 3, dimSize) &&
+					boardStatus[x - 2 * i][y - 2 * j] == Board::Status::none &&
+					boardStatus[x - 1 * i][y - 1 * j] == Board::Status::none &&
+					boardStatus[x + 1 * i][y + 1 * j] == side &&
+					boardStatus[x + 2 * i][y + 2 * j] == side &&
+					boardStatus[x + 3 * i][y + 3 * j] == Board::Status::none)
+					sum[toWhere] = 1;
+				if (boundaryCheck(i, j, {x, y}, -1, 4, dimSize) &&
+					boardStatus[x - 1 * i][y - 1 * j] == Board::Status::none &&
+					boardStatus[x + 1 * i][y + 1 * j] == Board::Status::none &&
+					boardStatus[x + 2 * i][y + 2 * j] == side &&
+					boardStatus[x + 3 * i][y + 3 * j] == side &&
+					boardStatus[x + 4 * i][y + 4 * j] == Board::Status::none)
+					sum[toWhere] = 1;
+				if (boundaryCheck(i, j, {x, y}, -1, 4, dimSize) &&
+					boardStatus[x - 1 * i][y - 1 * j] == Board::Status::none &&
+					boardStatus[x + 1 * i][y + 1 * j] == side &&
+					boardStatus[x + 2 * i][y + 2 * j] == Board::Status::none &&
+					boardStatus[x + 3 * i][y + 3 * j] == side &&
+					boardStatus[x + 4 * i][y + 4 * j] == Board::Status::none)
+					sum[toWhere] = 1;
+				if (boundaryCheck(i, j, {x, y}, -2, 3, dimSize) &&
+					boardStatus[x - 2 * i][y - 2 * j] == Board::Status::none &&
+					boardStatus[x - 1 * i][y - 1 * j] == side &&
+					boardStatus[x + 1 * i][y + 1 * j] == Board::Status::none &&
+					boardStatus[x + 2 * i][y + 2 * j] == side &&
+					boardStatus[x + 3 * i][y + 3 * j] == Board::Status::none)
+					sum[toWhere] = 1;
+				if (boundaryCheck(i, j, {x, y}, -2, 2, dimSize) &&
+					boardStatus[x - 2 * i][y - 2 * j] == Board::Status::none &&
+					boardStatus[x - 1 * i][y - 1 * j] == side &&
+					boardStatus[x + 1 * i][y + 1 * j] == side &&
+					boardStatus[x + 2 * i][y + 2 * j] == Board::Status::none)
+					sum[toWhere] = 1;
+			}
+	for (i = 0; i < 4; ++i)
+		tes += sum[i];
+	if (tes > 1)
+		return true;
+	else
+		return false;
+}
+BoardRecognizer::direction BoardRecognizer::sideCollect(int i, int j)
+{
+	if (i * j == 1)
+		return diag;
+	else if (i * j == -1)
+		return antidiag;
+	else
+		if (i != 0)
+			return hori;
+		else
+			return verti;
+}
+bool BoardRecognizer::boundaryCheck(int i, int j, Board::Coordinate positionToCalculate, int lower, int higher, int dimSize)
+{
+	int boundary[2][2] = { 0, };
+	switch (i)
+	{
+	case 0:
+		boundary[(int)BoardRecognizer::Dim::x][(int)BoardRecognizer::boundaryCheck::lower] = 0;
+		boundary[(int)BoardRecognizer::Dim::x][(int)BoardRecognizer::boundaryCheck::higher] = 0;
+		switch (j)
+		{
+		case 0:
+			return false;
+		case -1:
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::lower] = -higher;
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::higher] = -lower;
+			break;
+		case 1:
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::lower] = lower;
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::higher] = higher;
+			break;
+		}
+		break;
+	case -1:
+		boundary[(int)BoardRecognizer::Dim::x][(int)BoardRecognizer::boundaryCheck::lower] = -higher;
+		boundary[(int)BoardRecognizer::Dim::x][(int)BoardRecognizer::boundaryCheck::higher] = -lower;
+		switch (j)
+		{
+		case 0:
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::lower] = 0;
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::higher] = 0;
+			break;
+		case -1:
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::lower] = -higher;
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::higher] = -lower;
+			break;
+		case 1:
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::lower] = lower;
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::higher] = higher;
+			break;
+		}
+		break;
+	case 1:
+		boundary[(int)BoardRecognizer::Dim::x][(int)BoardRecognizer::boundaryCheck::lower] = lower;
+		boundary[(int)BoardRecognizer::Dim::x][(int)BoardRecognizer::boundaryCheck::higher] = higher;
+		switch (j)
+		{
+		case 0:
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::lower] = 0;
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::higher] = 0;
+			break;
+		case -1:
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::lower] = -higher;
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::higher] = -lower;
+			break;
+		case 1:
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::lower] = lower;
+			boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::higher] = higher;
+			break;
+		}
+		break;
+	}
+	if (x + boundary[(int)BoardRecognizer::Dim::x][(int)BoardRecognizer::boundaryCheck::lower] >= 0 &&
+		x + boundary[(int)BoardRecognizer::Dim::x][(int)BoardRecognizer::boundaryCheck::higher] < dimSize &&
+		y + boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::lower] >= 0 &&
+		y + boundary[(int)BoardRecognizer::Dim::y][(int)BoardRecognizer::boundaryCheck::higher] < dimSize)
+		return true;
+	else
+		return false;
+}
