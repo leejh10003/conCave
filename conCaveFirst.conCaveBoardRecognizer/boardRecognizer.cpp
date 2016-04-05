@@ -1,4 +1,5 @@
 #include "boardRecognizer.h"
+#include <string>
 Board::Coordinate BoardRecognizer::whereToPut(vector<vector<Board::Status>>(&boardStatus), Board::Status color, Board::Coordinate size)
 {
 	vector<vector<BoardRecognizer::Point>> winningMap;
@@ -16,14 +17,16 @@ Board::Coordinate BoardRecognizer::whereToPut(vector<vector<Board::Status>>(&boa
 /// <remarks>
 /// This function is private. Do not try to call this function.
 /// </remarks>
-void BoardRecognizer::findMeaningful(vector<vector<Board::Status>>& boardStatus, vector<vector<BoardRecognizer::Point>>(&winningMap))
+void BoardRecognizer::findMeaningful(vector<vector<Board::Status>>& boardStatus, vector<vector<BoardRecognizer::Point>>(&winningMap), Board::Status computerSide)
 {
 	//Iterates over every points
 	for (int i = 0; i < winningMap.size(); i++)
 		for (int j = 0; j < winningMap[i].size(); j++) {
 			if (boardStatus[i][j] == Board::Status::none)//find place where is blank
 				winningMap[i][j].isMeaningful = true;
-			if (BoardRecognizer::prohibitted(boardStatus, winningMap.size(), i, j, Board::Status::black))
+			if (BoardRecognizer::prohibitted(boardStatus, boardStatus.size(), i, j, (Board::Status)(-(int)computerSide)))
+				winningMap[i][j].opponentCanPut = false;
+			if (BoardRecognizer::prohibitted(boardStatus, winningMap.size(), i, j, computerSide))
 				winningMap[i][j].isMeaningful = false;
 		}
 }
@@ -36,144 +39,23 @@ void BoardRecognizer::findMeaningful(vector<vector<Board::Status>>& boardStatus,
 /// <remarks>
 /// This function is private. Do not try to call this function.
 /// </remarks>
-void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap))
-
+void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardStatus, Board::Status computerSide, vector<vector<BoardRecognizer::Point>>(&winningMap))
 {
-	int opponentCount;
-	int blankCount;
-	Board::Coordinate blankPoint;
-	list<Board::Coordinate> listEmergenceLines;
-	// Vertical searching
-	for (int i = 0; i < 3; i++)
-	{
-		opponentCount = 0;
-		blankCount = 0;
-		for (int j = 0; j < 3; j++)
-		{
-			//search point data
-
-			//Position where i putted
-			if (boardStatus[i][j] == myColor)
-			{
-				continue;
-			}
-			//Position where is blank. this is candidate emmergence point.
-			else if (boardStatus[i][j] == Board::Status::none)
-			{
-				blankPoint.x = i;
-				blankPoint.y = j;
-				blankCount++;
-			}
-			//Position where enemy putted.
+	string eachRow = "";
+	list<int> returned;
+	const int boardSize = boardStatus.size();
+	for (int i = 0; i < boardSize; i++) {
+		eachRow.append("c");
+		for (int j = 0; j < boardSize; j++)
+			if (boardStatus[i][j] == computerSide)
+				eachRow.append("s");
+			else if (boardStatus[i][j] == (Board::Status)(-(int)computerSide))
+				eachRow.append("o");
 			else
-			{
-				opponentCount++;
-			}
-		}
-		// If this line seem to be completed
-		if (opponentCount == 2 && blankCount == 1)
-		{
-			// Push this line's blank place to returning list
-			listEmergenceLines.push_back(blankPoint);
-		}
-	}
-	// Horizontal searching
-	for (int i = 0; i < 3; i++)
-	{
-		opponentCount = 0;
-		blankCount = 0;
-		for (int j = 0; j < 3; j++)
-		{
-			//search point data
-
-			//Position where i putted
-			if (boardStatus[j][i] == myColor)
-			{
-				continue;
-			}
-
-			//Position where is blank. this is candidate emmergence point.
-			else if (boardStatus[j][i] == Board::Status::none)
-			{
-				blankPoint.x = j;
-				blankPoint.y = i;
-				blankCount++;
-			}
-			//Position where enemy putted.
-			else
-			{
-				opponentCount++;
-			}
-		}
-		// If this line seem to be completed
-		if (opponentCount == 2 && blankCount == 1)
-		{
-			// Push this line's blank place to returning list
-			listEmergenceLines.push_back(blankPoint);
-		}
-	}
-	// Diagonal searching
-	for (int i = 0; i < 3; i++)
-	{
-		opponentCount = 0;
-		blankCount = 0;
-		//Position where i putted
-		if (boardStatus[i][i] == myColor)
-		{
-			continue;
-		}
-		//Position where is blank. this is candidate emmergence point.
-		else if (boardStatus[i][i] == Board::Status::none)
-		{
-			blankPoint.x = i;
-			blankPoint.y = i;
-			blankCount++;
-		}
-		//Position where enemy putted.
-		else
-		{
-			opponentCount++;
-		}
-	}
-	// If this line seem to be completed
-	if (opponentCount == 2 && blankCount == 1)
-	{
-		// Push this line's blank place to returning list
-		listEmergenceLines.push_back(blankPoint);
-	}
-	// Antidiagonal searching
-	for (int i = 0; i < 3; i++)
-	{
-		opponentCount = 0;
-		blankCount = 0;
-		//Position where i putted
-		if (boardStatus[i][2 - i] == myColor)
-		{
-			continue;
-		}
-		//Position where is blank. this is candidate emmergence point.
-		else if (boardStatus[i][2 - i] == Board::Status::none)
-		{
-			blankPoint.x = i;
-			blankPoint.y = 2 - i;
-			blankCount++;
-		}
-		//Position where enemy putted.
-		else
-		{
-			opponentCount++;
-		}
-	}
-	// If this line seem to be completed
-	if (opponentCount == 2 && blankCount == 1)
-	{
-		// Push this line's blank place to returning list
-		listEmergenceLines.push_back(blankPoint);
-	}
-	// Process every list element's emergence information to winningmap
-	for (list<Board::Coordinate>::iterator iterator = listEmergenceLines.begin(); iterator != listEmergenceLines.end(); iterator++)
-	{
-		winningMap[iterator->x][iterator->y].isEmergence = true;
+				eachRow.append("n");
+		eachRow.append("c");
+		for (int j = 0; j < boardSize - 5; j++)
+			if ()
 	}
 }
 /// <summary>
@@ -582,4 +464,37 @@ bool BoardRecognizer::boundaryCheck(int i, int j, Board::Coordinate positionToCa
 		return true;
 	else
 		return false;
+}
+list<BoardRecognizer::WinningSubstringResult> BoardRecognizer::fiveWinningpoint(string subString)
+{
+	list<BoardRecognizer::WinningSubstringResult> returnList;
+	if (subString == "nooon") {
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 0 });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 4 });
+	}
+	else if (subString == "oonoo") {
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 2 });
+	}
+	return returnList;
+}
+list<BoardRecognizer::WinningSubstringResult> BoardRecognizer::sixWinningpoint(string subString)
+{
+	list<BoardRecognizer::WinningSubstringResult> returnList;
+	if (subString == "nonoon") {
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::attention, 0 });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 2 });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 5 });
+	}
+	else if (subString == "noonon") {
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::attention, 0 });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 3 });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 5 });
+	}
+	else if (subString == "soooon") {
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 5 });
+	}
+	else if (subString == "noooos") {
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::attention, 0 });
+	}
+	return returnList;
 }
