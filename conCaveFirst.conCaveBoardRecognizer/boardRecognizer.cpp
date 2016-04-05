@@ -4,8 +4,8 @@ Board::Coordinate BoardRecognizer::whereToPut(vector<vector<Board::Status>>(&boa
 {
 	vector<vector<BoardRecognizer::Point>> winningMap;
 	winningMap.assign(size.x, vector<Point>(size.y));
-	findMeaningful(boardStatus, winningMap);
-	findEmergencePoint(boardStatus, color, winningMap);
+	findMeaningful(boardStatus, winningMap, color);
+	determineAllPointImportance(boardStatus, color, winningMap);
 	winnignMapComplete(boardStatus, color, winningMap);
 	return returnWhichToChoose(winningMap, boardStatus);
 }
@@ -39,13 +39,13 @@ void BoardRecognizer::findMeaningful(vector<vector<Board::Status>>& boardStatus,
 /// <remarks>
 /// This function is private. Do not try to call this function.
 /// </remarks>
-void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardStatus, Board::Status computerSide, vector<vector<BoardRecognizer::Point>>(&winningMap))
+void BoardRecognizer::determineAllPointImportance(vector<vector<Board::Status>>& boardStatus, Board::Status computerSide, vector<vector<BoardRecognizer::Point>>(&winningMap))
 {
 	string eachRow = "";
-	list<int> returned;
+	list<BoardRecognizer::WinningSubstringResult> returned;
 	const int boardSize = boardStatus.size();
 	for (int i = 0; i < boardSize; i++) {
-		eachRow.append("c");
+		eachRow.append("s");
 		for (int j = 0; j < boardSize; j++)
 			if (boardStatus[i][j] == computerSide)
 				eachRow.append("s");
@@ -54,8 +54,188 @@ void BoardRecognizer::findEmergencePoint(vector<vector<Board::Status>>& boardSta
 			else
 				eachRow.append("n");
 		eachRow.append("c");
-		for (int j = 0; j < boardSize - 5; j++)
-			if ()
+		for (int j = 0; j < eachRow.length() - 5; j++) {
+			returned = fiveWinningpoint(eachRow.substr(j, j+5), j);
+			for (list<BoardRecognizer::WinningSubstringResult>::iterator iterator = returned.begin(); iterator != returned.end(); iterator++) {
+				winningMap[i][j + iterator->posInString - 1].computerImportance = stateHandler(winningMap[i][j + iterator->posInString - 1].computerImportance, iterator->pointImportanceKind);
+			}
+		}
+		for (int j = 0; j < eachRow.length() - 6; j++) {
+			returned = sixWinningpoint(eachRow.substr(j, j +6), j);
+			for (list<BoardRecognizer::WinningSubstringResult>::iterator iterator = returned.begin(); iterator != returned.end(); iterator++) {
+				winningMap[i][j + iterator->posInString - 1].computerImportance = stateHandler(winningMap[i][j + iterator->posInString - 1].computerImportance, iterator->pointImportanceKind);
+			}
+		}
+		eachRow.clear();
+	}
+	for (int i = 0; i < boardSize; i++) {
+		eachRow.append("s");
+		for (int j = 0; j < boardSize; j++)
+			if (boardStatus[j][i] == computerSide)
+				eachRow.append("s");
+			else if (boardStatus[j][i] == (Board::Status)(-(int)computerSide))
+				eachRow.append("o");
+			else
+				eachRow.append("n");
+		eachRow.append("s");
+		for (int j = 0; j < eachRow.length() - 5; j++) {
+			returned = fiveWinningpoint(eachRow.substr(j, j + 5), j);
+			for (list<BoardRecognizer::WinningSubstringResult>::iterator iterator = returned.begin(); iterator != returned.end(); iterator++) {
+				winningMap[j + iterator->posInString - 1][i].computerImportance = stateHandler(winningMap[j + iterator->posInString - 1][i].computerImportance, iterator->pointImportanceKind);
+			}
+		}
+		for (int j = 0; j < eachRow.length() - 6; j++) {
+			returned = sixWinningpoint(eachRow.substr(j, j + 6), j);
+			for (list<BoardRecognizer::WinningSubstringResult>::iterator iterator = returned.begin(); iterator != returned.end(); iterator++) {
+				winningMap[j + iterator->posInString - 1][i].computerImportance = stateHandler(winningMap[j + iterator->posInString - 1][i].computerImportance, iterator->pointImportanceKind);
+			}
+		}
+		eachRow.clear();
+	}
+	for (int i = 0; i < boardSize - 2; i++) {
+		eachRow.append("s");
+		for (int j = 0; j < boardSize - i; j++)
+			if (boardStatus[j][j + i] == computerSide)
+				eachRow.append("s");
+			else if (boardStatus[j][j + i] == (Board::Status)(-(int)computerSide))
+				eachRow.append("o");
+			else
+				eachRow.append("n");
+		eachRow.append("s");
+		for (int j = 0; j < eachRow.length() - 5; j++) {
+			returned = fiveWinningpoint(eachRow.substr(j, j + 5), j);
+			for (list<BoardRecognizer::WinningSubstringResult>::iterator iterator = returned.begin(); iterator != returned.end(); iterator++) {
+				winningMap[j + iterator->posInString - 1][j + i + iterator->posInString - 1].computerImportance = stateHandler(winningMap[j + iterator->posInString - 1][j + i + iterator->posInString - 1].computerImportance, iterator->pointImportanceKind);
+			}
+		}
+		eachRow.clear();
+	}
+	for (int i = 1; i < boardSize - 2; i++) {
+		eachRow.append("s");
+		for (int j = 0; j < boardSize - i; j++)
+			if (boardStatus[j + i][j] == computerSide)
+				eachRow.append("s");
+			else if (boardStatus[j + i][j] == (Board::Status)(-(int)computerSide))
+				eachRow.append("o");
+			else
+				eachRow.append("n");
+		eachRow.append("s");
+		for (int j = 0; j < eachRow.length() - 5; j++) {
+			returned = fiveWinningpoint(eachRow.substr(j, j + 5), j);
+			for (list<BoardRecognizer::WinningSubstringResult>::iterator iterator = returned.begin(); iterator != returned.end(); iterator++) {
+				winningMap[j + i + iterator->posInString - 1][j + iterator->posInString - 1].computerImportance = stateHandler(winningMap[j + i + iterator->posInString - 1][j + iterator->posInString - 1].computerImportance, iterator->pointImportanceKind);
+			}
+		}
+		eachRow.clear();
+	}
+	for (int i = 0; i < boardSize - 3; i++) {
+		eachRow.append("s");
+		for (int j = 0; j < boardSize - i; j++)
+			if (boardStatus[j][j + i] == computerSide)
+				eachRow.append("s");
+			else if (boardStatus[j][j + i] == (Board::Status)(-(int)computerSide))
+				eachRow.append("o");
+			else
+				eachRow.append("n");
+		eachRow.append("s");
+		for (int j = 0; j < eachRow.length() - 6; j++) {
+			returned = sixWinningpoint(eachRow.substr(j, j + 6), j);
+			for (list<BoardRecognizer::WinningSubstringResult>::iterator iterator = returned.begin(); iterator != returned.end(); iterator++) {
+				winningMap[j + iterator->posInString - 1][j + i + iterator->posInString - 1].computerImportance = stateHandler(winningMap[j + iterator->posInString - 1][j + i + iterator->posInString - 1].computerImportance, iterator->pointImportanceKind);
+			}
+		}
+		eachRow.clear();
+	}
+	for (int i = 1; i < boardSize - 3; i++) {
+		eachRow.append("s");
+		for (int j = 0; j < boardSize - i; j++)
+			if (boardStatus[j + i][j] == computerSide)
+				eachRow.append("s");
+			else if (boardStatus[j + i][j] == (Board::Status)(-(int)computerSide))
+				eachRow.append("o");
+			else
+				eachRow.append("n");
+		eachRow.append("s");
+		for (int j = 0; j < eachRow.length() - 6; j++) {
+			returned = sixWinningpoint(eachRow.substr(j, j + 6), j);
+			for (list<BoardRecognizer::WinningSubstringResult>::iterator iterator = returned.begin(); iterator != returned.end(); iterator++) {
+				winningMap[j + i + iterator->posInString - 1][j + iterator->posInString - 1].computerImportance = stateHandler(winningMap[j + i + iterator->posInString - 1][j + iterator->posInString - 1].computerImportance, iterator->pointImportanceKind);
+			}
+		}
+		eachRow.clear();
+	}
+
+	for (int i = 0; i < boardSize - 2; i++) {
+		eachRow.append("s");
+		for (int j = 0; j < boardSize - i; j++)
+			if (boardStatus[j][boardSize - 1 - j - i] == computerSide)
+				eachRow.append("s");
+			else if (boardStatus[j][boardSize - 1 - j - i] == (Board::Status)(-(int)computerSide))
+				eachRow.append("o");
+			else
+				eachRow.append("n");
+		eachRow.append("s");
+		for (int j = 0; j < eachRow.length() - 5; j++) {
+			returned = fiveWinningpoint(eachRow.substr(j, j + 5), j);
+			for (list<BoardRecognizer::WinningSubstringResult>::iterator iterator = returned.begin(); iterator != returned.end(); iterator++) {
+				winningMap[j + iterator->posInString - 1][boardSize - j - i - iterator->posInString].computerImportance = stateHandler(winningMap[j + iterator->posInString - 1][boardSize - j - i - iterator->posInString].computerImportance, iterator->pointImportanceKind);
+			}
+		}
+		eachRow.clear();
+	}
+	for (int i = 1; i < boardSize - 2; i++) {
+		eachRow.append("s");
+		for (int j = 0; j < boardSize - i; j++)
+			if (boardStatus[i + j][boardSize + i - j] == computerSide)
+				eachRow.append("s");
+			else if (boardStatus[i + j][boardSize + i - j] == (Board::Status)(-(int)computerSide))
+				eachRow.append("o");
+			else
+				eachRow.append("n");
+		eachRow.append("s");
+		for (int j = 0; j < eachRow.length() - 5; j++) {
+			returned = fiveWinningpoint(eachRow.substr(j, j + 5), j);
+			for (list<BoardRecognizer::WinningSubstringResult>::iterator iterator = returned.begin(); iterator != returned.end(); iterator++) {
+				winningMap[j + i + iterator->posInString - 1][boardSize - j - iterator->posInString].computerImportance = stateHandler(winningMap[j + i + iterator->posInString - 1][boardSize - j - iterator->posInString].computerImportance, iterator->pointImportanceKind);
+			}
+		}
+		eachRow.clear();
+	}
+	for (int i = 0; i < boardSize - 3; i++) {
+		eachRow.append("s");
+		for (int j = 0; j < boardSize - i; j++)
+			if (boardStatus[j][boardSize - 1 - j - i] == computerSide)
+				eachRow.append("s");
+			else if (boardStatus[j][boardSize - 1 - j - i] == (Board::Status)(-(int)computerSide))
+				eachRow.append("o");
+			else
+				eachRow.append("n");
+		eachRow.append("s");
+		for (int j = 0; j < eachRow.length() - 6; j++) {
+			returned = sixWinningpoint(eachRow.substr(j, j + 6), j);
+			for (list<BoardRecognizer::WinningSubstringResult>::iterator iterator = returned.begin(); iterator != returned.end(); iterator++) {
+				winningMap[j + iterator->posInString - 1][boardSize - j - i - iterator->posInString].computerImportance = stateHandler(winningMap[j + iterator->posInString - 1][boardSize - j - i - iterator->posInString].computerImportance, iterator->pointImportanceKind);
+			}
+		}
+		eachRow.clear();
+	}
+	for (int i = 1; i < boardSize - 3; i++) {
+		eachRow.append("s");
+		for (int j = 0; j < boardSize - i; j++)
+			if (boardStatus[i + j][boardSize + i - j] == computerSide)
+				eachRow.append("s");
+			else if (boardStatus[i + j][boardSize + i - j] == (Board::Status)(-(int)computerSide))
+				eachRow.append("o");
+			else
+				eachRow.append("n");
+		eachRow.append("s");
+		for (int j = 0; j < eachRow.length() - 6; j++) {
+			returned = sixWinningpoint(eachRow.substr(j, j + 6), j);
+			for (list<BoardRecognizer::WinningSubstringResult>::iterator iterator = returned.begin(); iterator != returned.end(); iterator++) {
+				winningMap[j + i + iterator->posInString - 1][boardSize - j - iterator->posInString].computerImportance = stateHandler(winningMap[j + i + iterator->posInString - 1][boardSize - j - iterator->posInString].computerImportance, iterator->pointImportanceKind);
+			}
+		}
+		eachRow.clear();
 	}
 }
 /// <summary>
@@ -465,36 +645,45 @@ bool BoardRecognizer::boundaryCheck(int i, int j, Board::Coordinate positionToCa
 	else
 		return false;
 }
-list<BoardRecognizer::WinningSubstringResult> BoardRecognizer::fiveWinningpoint(string subString)
+list<BoardRecognizer::WinningSubstringResult> BoardRecognizer::fiveWinningpoint(string subString, int index)
 {
 	list<BoardRecognizer::WinningSubstringResult> returnList;
+	returnList.clear();
 	if (subString == "nooon") {
-		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 0 });
-		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 4 });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 0 + index});
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 4 + index});
 	}
 	else if (subString == "oonoo") {
-		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 2 });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 2 + index});
 	}
 	return returnList;
 }
-list<BoardRecognizer::WinningSubstringResult> BoardRecognizer::sixWinningpoint(string subString)
+list<BoardRecognizer::WinningSubstringResult> BoardRecognizer::sixWinningpoint(string subString, int index)
 {
 	list<BoardRecognizer::WinningSubstringResult> returnList;
+	returnList.clear();
 	if (subString == "nonoon") {
-		returnList.push_back({ BoardRecognizer::PointImportanceEnum::attention, 0 });
-		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 2 });
-		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 5 });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::attention, 0 + index });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 2 + index });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 5 + index });
 	}
 	else if (subString == "noonon") {
-		returnList.push_back({ BoardRecognizer::PointImportanceEnum::attention, 0 });
-		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 3 });
-		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 5 });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::attention, 0 + index });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 3 + index });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 5 + index });
 	}
 	else if (subString == "soooon") {
-		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 5 });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::emergence, 5 + index });
 	}
 	else if (subString == "noooos") {
-		returnList.push_back({ BoardRecognizer::PointImportanceEnum::attention, 0 });
+		returnList.push_back({ BoardRecognizer::PointImportanceEnum::attention, 0 + index });
 	}
 	return returnList;
+}
+BoardRecognizer::PointImportanceEnum BoardRecognizer::stateHandler(BoardRecognizer::PointImportanceEnum current, BoardRecognizer::PointImportanceEnum dst)
+{
+	if ((int)current < (int)dst)
+		return dst;
+	else
+		return current;
 }

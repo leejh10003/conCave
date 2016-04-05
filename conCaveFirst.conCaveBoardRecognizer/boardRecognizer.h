@@ -48,7 +48,7 @@ private:
 		y
 	};
 	static void findMeaningful(vector<vector<Board::Status>>& boardStatus, vector<vector<BoardRecognizer::Point>>(&winningMap), Board::Status mySide);
-	static void findEmergencePoint(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap));
+	static void determineAllPointImportance(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap));
 	static void winnignMapComplete(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap));
 	static Board::Coordinate BoardRecognizer::returnWhichToChoose(vector<vector<BoardRecognizer::Point>>(&winningMap), vector<vector<Board::Status>>& boardStatus);
 	static Board::Coordinate chooseBaseonPosition(list<Board::Coordinate>& input);
@@ -56,6 +56,7 @@ private:
 	static bool prohibitted(vector<vector<Board::Status>>& boardStatus, int dimSize, int x, int y, Board::Status side);
 	static BoardRecognizer::direction sideCollect(int i, int j);
 	static bool boundaryCheck(int i, int j, Board::Coordinate positionToCalculate, int lower, int higher, int dimSize);
-	static list<BoardRecognizer::WinningSubstringResult> fiveWinningpoint(string subString);
-	static list<BoardRecognizer::WinningSubstringResult> sixWinningpoint(string subString);
+	static list<BoardRecognizer::WinningSubstringResult> fiveWinningpoint(string subString, int index);
+	static list<BoardRecognizer::WinningSubstringResult> sixWinningpoint(string subString, int index);
+	static BoardRecognizer::PointImportanceEnum BoardRecognizer::stateHandler(BoardRecognizer::PointImportanceEnum current, BoardRecognizer::PointImportanceEnum dst);
 };
