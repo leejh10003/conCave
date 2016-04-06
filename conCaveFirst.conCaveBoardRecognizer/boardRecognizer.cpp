@@ -6,7 +6,7 @@ Board::Coordinate BoardRecognizer::whereToPut(vector<vector<Board::Status>>(&boa
 	winningMap.assign(size.x, vector<Point>(size.y));
 	findMeaningful(boardStatus, winningMap, color);
 	determineAllPointImportance(boardStatus, color, winningMap);
-	winnignMapComplete(boardStatus, color, winningMap);
+	getChunkCompleteSum(boardStatus, color, winningMap);
 	return returnWhichToChoose(winningMap, boardStatus);
 }
 /// <summary>
@@ -22,12 +22,13 @@ void BoardRecognizer::findMeaningful(vector<vector<Board::Status>>& boardStatus,
 	//Iterates over every points
 	for (int i = 0; i < winningMap.size(); i++)
 		for (int j = 0; j < winningMap[i].size(); j++) {
-			if (boardStatus[i][j] == Board::Status::none)//find place where is blank
-				winningMap[i][j].isMeaningful = true;
+			if (boardStatus[i][j] == (Board::Status)(-(int)computerSide))//find place where is blank
+				winningMap[i][j].isMeaningful = false;
 			if (BoardRecognizer::prohibitted(boardStatus, boardStatus.size(), i, j, (Board::Status)(-(int)computerSide)))
 				winningMap[i][j].opponentCanPut = false;
-			if (BoardRecognizer::prohibitted(boardStatus, winningMap.size(), i, j, computerSide))
+			if (BoardRecognizer::prohibitted(boardStatus, winningMap.size(), i, j, computerSide)) {
 				winningMap[i][j].isMeaningful = false;
+			}
 		}
 }
 /// <summary>
@@ -248,134 +249,90 @@ void BoardRecognizer::determineAllPointImportance(vector<vector<Board::Status>>&
 /// <remarks>
 /// This function is private. Do not try to call this function.
 /// </remarks>
-void BoardRecognizer::winnignMapComplete(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap))
+void BoardRecognizer::getChunkCompleteSum(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap))
 {
-	bool isThereBlack;
-	bool isThereWhite;
-	list<Board::Coordinate> addedCoordinate;
-	// Calculate each position's number of lines where it can contribute to.
-	// Vertical
-	for (int i = 0; i < winningMap.size(); i++)
-	{
-		isThereBlack = false;
-		isThereWhite = false;
-
-		// Search lines' stones
-		for (int j = 0; j < winningMap[i].size(); j++)
-		{
-			switch (boardStatus[i][j])
-			{
-			case Board::Status::black:
-				isThereBlack = true; break;
-			case Board::Status::white:
-				isThereWhite = true; break;
-			case Board::Status::none:
-				addedCoordinate.push_back(Board::Coordinate{ i, j });
-			default:
-				continue;
+	int boardSize = boardStatus.size();
+	string str;
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++)
+			if (winningMap[i][j].isMeaningful == true) {
+				for (int k = i - 5; k < i + 6; k++)
+					if (k < 0 || k >= boardSize || boardStatus[k][j] == (Board::Status)(-(int)myColor))
+						str.append("o");
+					else if (boardStatus[k][j] == myColor)
+						str.append("s");
+					else
+						str.append("n");
+				for (int k = 0; k < 5; k++) {
+					string temp = str.substr(k, k + 7);
+					if (temp[0] == myColor || temp[6] == myColor)
+						continue;
+					if (temp.substr(1, 6).find("o") > 0)
+						continue;
+					else
+						winningMap[i][j].chunkCompletionSum += temp.substr(1, 6).find("s");
+				}
 			}
-		}
-		
-		if (isThereBlack == false || isThereWhite == false)// If line is filled with different colr, it is meaningless line
-		{
-			// Else, add number
-			for (list<Board::Coordinate>::iterator iterator = addedCoordinate.begin(); iterator != addedCoordinate.end(); iterator++)
-			{
-				winningMap[iterator->x][iterator->y].linesCanContribute += 1;
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++)
+			if (winningMap[j][i].isMeaningful == true) {
+				for (int k = i - 5; k < i + 6; k++)
+					if (k < 0 || k >= boardSize || boardStatus[j][k] == (Board::Status)(-(int)myColor))
+						str.append("o");
+					else if (boardStatus[j][k] == myColor)
+						str.append("s");
+					else
+						str.append("n");
+				for (int k = 0; k < 5; k++) {
+					string temp = str.substr(k, k + 7);
+					if (temp[0] == myColor || temp[6] == myColor)
+						continue;
+					if (temp.substr(1, 6).find("o") > 0)
+						continue;
+					else
+						winningMap[j][i].chunkCompletionSum += temp.substr(1, 6).find("s");
+				}
 			}
-		}
-		addedCoordinate.clear();
-	}
-	// Horizontal
-	for (int i = 0; i < winningMap.size(); i++)
-	{
-		isThereBlack = false;
-		isThereWhite = false;
-
-		// Search lines' stones
-		for (int j = 0; j < winningMap[i].size(); j++)
-		{
-			switch (boardStatus[j][i])
-			{
-			case Board::Status::black:
-				isThereBlack = true; break;
-			case Board::Status::white:
-				isThereWhite = true; break;
-			case Board::Status::none:
-				addedCoordinate.push_back(Board::Coordinate{ j, i });
-			default:
-				continue;
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++)
+			if (winningMap[i][j].isMeaningful == true) {
+				for (int k = - 5; k < 6; k++)
+					if (k + i < 0 || k + i >= boardSize || k + j < 0 || k + j >= boardSize || boardStatus[i + k][j + k] == (Board::Status)(-(int)myColor))
+						str.append("o");
+					else if (boardStatus[i + k][j + k] == myColor)
+						str.append("s");
+					else
+						str.append("n");
+				for (int k = 0; k < 5; k++) {
+					string temp = str.substr(k, k + 7);
+					if (temp[0] == myColor || temp[6] == myColor)
+						continue;
+					if (temp.substr(1, 6).find("o") > 0)
+						continue;
+					else
+						winningMap[j][i].chunkCompletionSum += temp.substr(1, 6).find("s");
+				}
 			}
-		}
-		if (isThereBlack == false || isThereWhite == false)// If line is filled with different colr, it is meaningless line
-		{
-			// Else, add number
-			for (list<Board::Coordinate>::iterator iterator = addedCoordinate.begin(); iterator != addedCoordinate.end(); iterator++)
-			{
-				winningMap[iterator->x][iterator->y].linesCanContribute += 1;
+	for (int i = 0; i < boardSize; i++)
+		for (int j = 0; j < boardSize; j++)
+			if (winningMap[i][j].isMeaningful == true) {
+				for (int k = - 5; k < 6; k++)
+					if (k + i < 0 || k + i >= boardSize || j - k < 0 || j - k >= boardSize || boardStatus[i + k][j - k] == (Board::Status)(-(int)myColor))
+						str.append("o");
+					else if (boardStatus[i + k][j - k] == myColor)
+						str.append("s");
+					else
+						str.append("n");
+				for (int k = 0; k < 5; k++) {
+					string temp = str.substr(k, k + 7);
+					if (temp[0] == myColor || temp[6] == myColor)
+						continue;
+					if (temp.substr(1, 6).find("o") > 0)
+						continue;
+					else
+						winningMap[j][i].chunkCompletionSum += temp.substr(1, 6).find("s");
+				}
 			}
-		}
-		addedCoordinate.clear();
-	}
-	// Diagonal
-	isThereBlack = false;
-	isThereWhite = false;
-	// Search lines' stones
-	for (int i = 0; i < 3; i++)
-	{
-		switch (boardStatus[i][i])
-		{
-		case Board::Status::black:
-			isThereBlack = true; break;
-		case Board::Status::white:
-			isThereWhite = true; break;
-		case Board::Status::none:
-			addedCoordinate.push_back(Board::Coordinate{ i, i });
-		default:
-			continue;
-		}
-	}
-	if (isThereBlack == false || isThereWhite == false)// If line is filled with different colr, it is meaningless line
-	{
-		// Else, add number
-		for (list<Board::Coordinate>::iterator iterator = addedCoordinate.begin(); iterator != addedCoordinate.end(); iterator++)
-		{
-			winningMap[iterator->x][iterator->y].linesCanContribute += 1;
-		}
-	}
-	addedCoordinate.clear();
-	// Antidiagonal
-	isThereBlack = false;
-	isThereWhite = false;
-	// Search lines' stones
-	for (int i = 0; i < 3; i++)
-	{
-		switch (boardStatus[i][2-i])
-		{
-		case Board::Status::black:
-			isThereBlack = true; break;
-		case Board::Status::white:
-			isThereWhite = true; break;
-		case Board::Status::none:
-			addedCoordinate.push_back(Board::Coordinate{ i, 2-i });
-		default:
-			continue;
-		}
-	}
-	if (isThereBlack == false || isThereWhite == false)// If line is filled with different colr, it is meaningless line
-	{
-		// Else, add number
-		for (list<Board::Coordinate>::iterator iterator = addedCoordinate.begin(); iterator != addedCoordinate.end(); iterator++)
-		{
-			winningMap[iterator->x][iterator->y].linesCanContribute += 1;
-		}
-	}
-	addedCoordinate.clear();
-	// Upper operations never eliminate positions which are not blank, but still can be linked. We don't need this information. So eliminate them.
-	for (int i = 0; i < 3; i++)
-		for (int j = 0; j < 3; j++)
-			if (boardStatus[i][j] != Board::Status::none)
-				winningMap[i][j].linesCanContribute = 0;
 }
 /// <summary>
 /// This Function returns which point to return as a putting location.
@@ -399,7 +356,7 @@ Board::Coordinate BoardRecognizer::returnWhichToChoose(vector<vector<BoardRecogn
 	{
 		for (int j = 0; j < winningMap[i].size(); j++)
 		{
-			int thisPointLines = winningMap[i][j].linesCanContribute;
+			int thisPointLines = winningMap[i][j].chunkCompletionSum;
 			if (best < thisPointLines)
 			{
 				winningPoint.clear();

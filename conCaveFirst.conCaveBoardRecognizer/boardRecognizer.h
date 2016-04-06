@@ -20,11 +20,11 @@ private:
 	};
 	struct Point {
 		bool isEmergence = false;
-		bool isMeaningful = false;
+		bool isMeaningful = true;
 		bool opponentCanPut = true;
 		BoardRecognizer::PointImportanceEnum computerImportance;
 		BoardRecognizer::PointImportanceEnum userImportance;
-		int linesCanContribute = 0;
+		int chunkCompletionSum = 0;
 	};
 	struct WinningSubstringResult {
 		BoardRecognizer::PointImportanceEnum pointImportanceKind;
@@ -49,7 +49,7 @@ private:
 	};
 	static void findMeaningful(vector<vector<Board::Status>>& boardStatus, vector<vector<BoardRecognizer::Point>>(&winningMap), Board::Status mySide);
 	static void determineAllPointImportance(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap));
-	static void winnignMapComplete(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap));
+	static void getChunkCompleteSum(vector<vector<Board::Status>>& boardStatus, Board::Status myColor, vector<vector<BoardRecognizer::Point>>(&winningMap));
 	static Board::Coordinate BoardRecognizer::returnWhichToChoose(vector<vector<BoardRecognizer::Point>>(&winningMap), vector<vector<Board::Status>>& boardStatus);
 	static Board::Coordinate chooseBaseonPosition(list<Board::Coordinate>& input);
 	static list<Board::Coordinate> returnBlankList(vector<vector<BoardRecognizer::Point>>(&winningMap));
